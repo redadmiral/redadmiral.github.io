@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<generator uri="http://jekyllrb.com" version="3.4.3">Jekyll</generator>
+<link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" />
+<link href="http://localhost:4000/" rel="alternate" type="text/html" />
+<updated>2017-04-11T15:13:53+02:00</updated>
+<id>http://localhost:4000/</id>
+<entry>
+<title>Sentimentanalyse mit SentiWS in R</title>
+<link href="http://localhost:4000/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R.html" rel="alternate" type="text/html" title="Sentimentanalyse mit SentiWS in R" />
+<published>2017-04-10T12:20:00+02:00</published>
+<updated>2017-04-10T12:20:00+02:00</updated>
+<id>http://localhost:4000/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R</id>
+<content type="html" xml:base="http://localhost:4000/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R.html">&lt;p&gt;SentiWS ist der einzige deutsche Sentimentwortschatz unter freier Lizenz. Leider ist er für eine automatisierte Auswertung nicht optimal strukturiert. Ein einfaches R-Skript behebt das. Auch die Sentimentanalyse selbst ist kein Hexenwerk.&lt;/p&gt;
+
+&lt;h2 id=&quot;sortieren-von-sentiws&quot;&gt;Sortieren von SentiWS&lt;/h2&gt;
+
+&lt;p&gt;SentiWS wie es von der &lt;a href=&quot;http://wortschatz.uni-leipzig.de/en/download&quot;&gt;Uni Leipzig veröffentlicht wurde&lt;/a&gt; ist für eine automatische Auswertung schlecht strukturiert:&lt;/p&gt;
+
+&lt;p&gt;{% highlight text %}
+Abbau|NN	-0.058	Abbaus,Abbaues,Abbauen,Abbaue
+Abbruch|NN	-0.0048	Abbruches,Abbrüche,Abbruchs,Abbrüchen
+Abdankung|NN	-0.0048	Abdankungen
+Abdämpfung|NN	-0.0048	Abdämpfungen
+Abfall|NN	-0.0048	Abfalles,Abfälle,Abfalls,Abfällen
+Abfuhr|NN	-0.3367	Abfuhren
+Abgrund|NN	-0.3465
+{% endhighlight %}&lt;/p&gt;
+
+&lt;p&gt;In der ersten Spalte der Textdatei ist die Grundform des Wortes und, durch Pipe getrennt, die Wortart. Der Sentiment-Score von -1 bis 1 ist in Spalte zwei und in der dritten Spalte die Flexionen des Worts. Um schnell durch die Datenbank iterieren zu können, wäre es sinnvoller, die Grundform ohne die Wortart in der ersten Spalte zu haben und sämtliche Flexionen mit ihrem eigenen Sentiment-Score ebenfalls in Spalte eins zu platzieren.&lt;/p&gt;
+
+&lt;p&gt;Die Wortart entfernt man am einfachsten mit einem regulären Ausruck (Regex) in einem Texteditor wie Gedit oder Notepad Plus. Regex in R können etwas frickelig sein, weil Sonderzeichen zuerst von R interpretiert werden, bevor diese als Regex verwendet werden. Mit folgendem Regex findet man alle Wortarten; Diese einfach durch nichts ersetzen:&lt;/p&gt;
+
+&lt;p&gt;{% highlight text %}
+|[A-Z]*
+{% endhighlight %}&lt;/p&gt;
+
+&lt;p&gt;Das folgende Skript ließt zuerst die beiden Textdateien der Uni Leipzig ein und teilt die dritte Spalte in ihre einzelnen Worte auf.&lt;/p&gt;
+
+&lt;p&gt;{% highlight R %}
+#manually delete the |NN stuff, it doesn’t work very well in R. Regex: ||[A-Z]*&lt;/p&gt;
+
+&lt;p&gt;#load sentiment files
+negativ &amp;lt;- read.table(“SentiWS_v1.8c_Negative.txt”, fill = TRUE)
+positiv &amp;lt;- read.table(“SentiWS_v1.8c_Positive.txt”, fill = TRUE)&lt;/p&gt;
+
+&lt;p&gt;#split into single words
+einzelworte_negativ &amp;lt;- strsplit(as.character(negativ$V3), split =”,”)
+einzelworteframe_negativ &amp;lt;- as.data.frame(unlist(einzelworte_negativ))&lt;/p&gt;
+
+&lt;p&gt;einzelworte_positiv &amp;lt;- strsplit(as.character(positiv$V3), split =”,”)
+einzelworteframe_positiv &amp;lt;- as.data.frame(unlist(einzelworte_positiv))&lt;/p&gt;
+
+&lt;p&gt;{% endhighlight %}
+Anschließend iteriert R jeweils durch die Wortlisten positiv und negativ. Dabei wird für jede Flexion aus der dritten Spalte der Sentiment-Score in die zweite Spalte kopiert.
+{% highlight R %}&lt;/p&gt;
+
+&lt;p&gt;#takes the number of words and creates a data frame only with the sentiment scores as many times as the word inflection occurs.
+number_words &amp;lt;- summary(einzelworte_negativ)&lt;/p&gt;
+
+&lt;p&gt;sentiment_score &amp;lt;- NULL
+for (i in 1:1818) {
+j &amp;lt;- 0
+while (j &amp;lt; as.numeric(number_words[i])) {
+ sentiment_score &amp;lt;- rbind(sentiment_score, negativ[i,2])
+ j &amp;lt;- j+1
+}
+}&lt;/p&gt;
+
+&lt;p&gt;number_words &amp;lt;- summary(einzelworte_positiv)&lt;/p&gt;
+
+&lt;p&gt;sentiment_score &amp;lt;- NULL
+for (i in 1:1650) {
+  j &amp;lt;- 0
+  while (j &amp;lt; as.numeric(number_words[i])) {
+    sentiment_score &amp;lt;- rbind(sentiment_score, positiv[i,2])
+    j &amp;lt;- j+1
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;{% endhighlight %}&lt;/p&gt;
+
+&lt;p&gt;Anschließend werden die Wörter und die Scores zusammengefügt und unten an die bisherige Wortliste geschrieben.&lt;/p&gt;
+
+&lt;p&gt;{% highlight R %}&lt;/p&gt;
+
+&lt;p&gt;#bind the sentiment score with the words
+new_negativ &amp;lt;- cbind(as.character(einzelworteframe_negativ[,1]), sentiment_score)
+new_negativ &amp;lt;- rbind(negativ[,1:2], new_negativ)&lt;/p&gt;
+
+&lt;p&gt;new_positiv &amp;lt;- cbind(as.character(einzelworteframe_positiv[,1]), sentiment_score)
+new_positiv &amp;lt;- rbind(positiv[,1:2], new_positiv)
+{% endhighlight %}&lt;/p&gt;
+
+&lt;p&gt;Die fertige und leichter zu handhabende Datei sieht nun folgendermaßen aus:&lt;/p&gt;
+
+&lt;p&gt;{% highlight text %}
+“”,”Wort”,”sentiment score”
+“1”,”Abbau”,”-0.058”
+“2”,”Abbruch”,”-0.0048”
+“3”,”Abdankung”,”-0.0048”
+[…]
+“1819”,”Abbaus”,”-0.058”
+“1820”,”Abbaues”,”-0.058”
+“1821”,”Abbauen”,”-0.058”
+“1822”,”Abbaue”,”-0.058”
+[…]
+{% endhighlight %}&lt;/p&gt;
+
+&lt;p&gt;R speichert in der CSV-Datei dabei auch den Score als Character, was mit as.numeric() vermieden werden könnte.&lt;/p&gt;
+
+&lt;p&gt;Die neuformatierte &lt;a href=&quot;{{ site.baseurl }}/assets/new_positiv.csv&quot;&gt;positive&lt;/a&gt; und &lt;a href=&quot;{{ site.baseurl }}/assets/new_negativ.csv&quot;&gt;negative&lt;/a&gt;  Liste können hier heruntergeladen werden. Sie stehen wie SentiWS auch unter &lt;a href=&quot;https://creativecommons.org/licenses/by-nc-sa/3.0/&quot;&gt;Creative Commons Attribution-Noncommercial-Share Alike 3.0 Unported License&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;sentimentanalyse&quot;&gt;Sentimentanalyse&lt;/h2&gt;
+&lt;p&gt;Im folgenden Beispiel ging es darum, aus einer JSON-Datei mit Kommentaren das Sentiment der Kommentare herauszufinden.&lt;/p&gt;
+
+&lt;p&gt;Mit der neu strukturierten Liste an Wörtern und Sentiment-Score ist es nun ein leichtes durch jedes Wort zu iterieren und es mit dem Wörterbuch abzugleichen. Dafür zuerst den Text und das Sentimentwörterbuch einlesen. Anschließend den Text von allem befreien, was die Texterkennung behindert. Dazu zählen vor allem Satzzeichen, weil sie direkt am Wort sind und dieses dann nicht erkannt würde.&lt;/p&gt;
+
+&lt;p&gt;{% highlight R %}
+require(jsonlite)&lt;/p&gt;
+
+&lt;p&gt;comments &amp;lt;- fromJSON(“comments.json”, flatten = TRUE)&lt;/p&gt;
+
+&lt;p&gt;#export actual comments
+comments &amp;lt;- comments$threads$postings.content.body&lt;/p&gt;
+
+&lt;p&gt;#remove links and interpunctuation
+comments &amp;lt;- gsub(“ ?(f|ht)tp(s?)://(.&lt;em&gt;)[.][a-z]+”, “”, comments)
+comments &amp;lt;- gsub(“\[.&lt;/em&gt;?\]”, “”, comments)
+comments &amp;lt;- gsub(“[^[:alnum:] ]”, “”, comments)&lt;/p&gt;
+
+&lt;p&gt;#import sentiment tables
+negativ &amp;lt;- read.csv(“new_negativ.csv”, row.names = 1)
+positiv &amp;lt;- read.csv(“new_positiv.csv”, row.names = 1)&lt;/p&gt;
+
+&lt;p&gt;{% endhighlight %}
+Jetzt die Kommentare in einzelne Worte zerlegen…
+{% highlight R %}
+#strip comments into single words
+for (i in 1:length(comments)) {
+  comments[i] &amp;lt;- strsplit(as.character(comments[i]), “ “)
+  i &amp;lt;- i + 1
+}&lt;/p&gt;
+
+&lt;p&gt;{% endhighlight %}
+…und mit dem Sentimentwörterbuch abgleichen.
+{% highlight R %}
+liste &amp;lt;- NULL&lt;/p&gt;
+
+&lt;p&gt;for (i in 1:length(comments)) {
+  score &amp;lt;- NULL
+  #check if word in comment is in list. if yes, generate vector with scores
+  for (word in unlist(comments[i])) {
+    if (is.element(word, negativ[,1])) {
+    score &amp;lt;- c(score, negativ[negativ[,1] == word,2])
+    }
+    if (is.element(word, positiv[,1])) {
+      score &amp;lt;- c(score, positiv[positiv[,1] == word,2])
+    }
+  }
+  var &amp;lt;- cbind(i, mean(score))
+  if (!is.null(score))
+    liste &amp;lt;- rbind(liste, var)
+  else
+    liste &amp;lt;- rbind(liste, cbind(i, 0))
+  print(score)
+  }
+{% endhighlight %}&lt;/p&gt;
+
+&lt;p&gt;Für jeden Kommentar ist nun der Mittelwert der Sentiment-Werte in der Variable Liste abgelegt.&lt;/p&gt;
+
+&lt;p&gt;SentiWS wurde entwickelt von R. Remus, U. Quasthoff &amp;amp; G. Heyer: SentiWS - a Publicly Available German-language Resource for Sentiment Analysis. In: Proceedings of the 7th International Language Ressources and Evaluation (LREC’10), pp. 1168-1171, 2010&lt;/p&gt;
+</content>
+<summary>SentiWS ist der einzige deutsche Sentimentwortschatz unter freier Lizenz. Leider ist er für eine automatisierte Auswertung nicht optimal strukturiert. Ein einfaches R-Skript behebt das. Auch die Sentimentanalyse selbst ist kein Hexenwerk.</summary>
+</entry>
+<entry>
+<title>Cambridge Analytica und die virale Bombe</title>
+<link href="http://localhost:4000/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe.html" rel="alternate" type="text/html" title="Cambridge Analytica und die virale Bombe" />
+<published>2016-12-06T11:20:00+01:00</published>
+<updated>2016-12-06T11:20:00+01:00</updated>
+<id>http://localhost:4000/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe</id>
+<content type="html" xml:base="http://localhost:4000/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe.html">&lt;p&gt;Wer ist schuld an Trump? Zuerst waren es die weißen Männer, die ihn gewählt haben. Dann die Medien, die ihn unterschätzt haben. Dann war es die globale Linke, die zugelassen hat, dass die weißen Männer Trump wählen. Dann Facebook, auf dem Fake-News von und für weiße Männer geteilt wurden. Jetzt sind es die Datenanalysten von Cambridge Analytica.
+Cambridge Analytica bezieht personenbezogene Daten aus verschiedenen Quellen, wie den öffentlichen Facebookprofilen und frei verkäuflichen Konsumentendaten. Diese Daten werden arrangiert und nach dem Ocean-Modell ausgewertet, einer Technik aus der Psychologie mithilfe derer Persönlichkeitstypen dargestellt werden können. Die Firma verspricht so eine zielgenaue Ansprache von Wählerinnen und Wählern, ganz nach ihrem jeweiligen Persönlichkeitsprofil.&lt;/p&gt;
+
+&lt;h2 id=&quot;cambridge-analytica-sind-keine-hexer&quot;&gt;Cambridge Analytica sind keine Hexer&lt;/h2&gt;
+&lt;p&gt;Im viral gegangenen Artikel „Ich habe nur gesagt, dass es die Bombe gibt“ beschreibt Hannes Grassegger, dass extrovertierten Konservativen so beispielsweise Gewehre als romantische Jagdwaffen verkauft werden. Menschen mit hohen Werten im Bereich Neurotizismus werden Waffen als Versicherung gegen Einbrecher angepriesen. Das gleiche Prinzip ist auch auf Wählerinnen und Wähler anwendbar.
+Grassegger hebt die Wirkmächtigkeit dieser neuen Art der Datenanalyse hervor. Er findet für viele Punkte im Wahlkampf Trumps Erfolge, die er auf die Arbeit von Cambridge Analytica zurückführt. So beschreibt er, dass die Bewohner*innen „Little Haitis“ in Miami gezielt auf das Versagen der Clinton-Stiftung nach dem Erdbeben auf Haiti angesprochen wurden. Oder das 175.000 personalisierte Nachrichten nach den TV-Debatten verschickt wurden.
+Von seinen Kritikern bekommt er nun zu hören, er habe Angst vor Big-Data schüren wollen. Wolle sich in deutscher Fortschrittsfeindlichkeit üben, er nutze „Harry-Potter-esque Zaubernarrative“ (Mario Sixtus, dessen Reportagen zum Thema sehr sehenswert sind – aber genauso wenig ohne Aufhänger auskommen) oder spinne gar eine „linke Verschwörungstheorie“ (Meedia. Warum das Quatsch ist wird dort gleich in den Kommentaren abgehandelt).&lt;/p&gt;
+
+&lt;iframe src=&quot;https://www.youtube.com/embed/JgnvmWmMW9Y&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot; class=&quot;post_vid&quot;&gt;&lt;/iframe&gt;
+
+&lt;h2 id=&quot;monokausal-ja-alarmistisch-nein&quot;&gt;Monokausal, ja. Alarmistisch, nein.&lt;/h2&gt;
+&lt;p&gt;Ja, Grassegger stellt den Wahlerfolg Trumps monokausal dar. In einem journalistischen Text, der in die Tiefe gehen will, kann man aber auch nicht viel mehr leisten als ein Thema zu behandeln. Grassegger zeigt, dass das klassische Zielgruppendenken ausgedient hat. Es ist mit seiner Einteilung in Geschlecht, Alter und Herkunft zu holzschnittartig. Zumindest im Vergleich zum Modell von Cambridge Analytica, das mit dem Ocean-Modell aufgebohrt wurde.
+Selbst dieses Modell ist immer noch weit davon entfernt wirklich genaue Aussagen über Einzelpersonen treffen zu können. Wer will, kann sich davon unter applymagicsauce.com selbst überzeugen. Doch das System muss nicht gut sein, solange es nur besser ist als das bisher verwendete.
+Dabei ist es auch egal, ob es einen kausalen Zusammenhang zwischen der Vorliebe für amerikanische Autos und einer Stimme für Trump gibt oder ob es sich nur um Korrelation handelt. Allein durch die Korrelation können neue Wählergruppen erschlossen werden, die vorher außen vor geblieben wären. Ob der Chevy dich zum Nazi macht, ist für die Kommunikatoren unerheblich.&lt;/p&gt;
+
+&lt;h2 id=&quot;besser-ist-gut-genug&quot;&gt;Besser ist gut genug&lt;/h2&gt;
+&lt;p&gt;Ein weiterer Punkt, der den Lesenden im Gedächtnis bleiben sollte, ist welche Macht soziale Medien als politisches Werkzeug haben. Nicht nur auf der Anwendungsebene, um darüber Inhalte zu teilen. Auch als Tool, um die jeweilige Zielgruppen zu verstehen und dementsprechend addressieren zu können. Die Parteien der neuen Rechten sind stark in den sozialen Netzen und wissen sie zu nutzen.
+Die neuen Technologien um Zielgruppen zu erschließen und sie anzusprechen werden vor allem von diesen netzaffinen Parteien der neuen Rechten genutzt werden, die bei Trump gesehen haben wie gut sie funktionieren. Zu hoffen bleibt nur, dass ihr Budget ähnlich begrenzt sein wird, wie das der rechten leave.eu Kampagne, die sich die Dienste von Cambridge Analytica auch nur begrenzt leisten konnte. Ihrem Wahlerfolg hat das keinen Schaden getan.&lt;/p&gt;
+</content>
+<summary>Wer ist schuld an Trump? Zuerst waren es die weißen Männer, die ihn gewählt haben. Dann die Medien, die ihn unterschätzt haben. Dann war es die globale Linke, die zugelassen hat, dass die weißen Männer Trump wählen. Dann Facebook, auf dem Fake-News von und für weiße Männer geteilt wurden. Jetzt sind es die Datenanalysten von Cambridge Analytica.Cambridge Analytica bezieht personenbezogene Daten aus verschiedenen Quellen, wie den öffentlichen Facebookprofilen und frei verkäuflichen Konsumentendaten. Diese Daten werden arrangiert und nach dem Ocean-Modell ausgewertet, einer Technik aus der Psychologie mithilfe derer Persönlichkeitstypen dargestellt werden können. Die Firma verspricht so eine zielgenaue Ansprache von Wählerinnen und Wählern, ganz nach ihrem jeweiligen Persönlichkeitsprofil.</summary>
+</entry>
+<entry>
+<title>Gaming?! – Kostet extra!</title>
+<link href="http://localhost:4000/2015/11/06/Gaming-_Kostet_Extra.html" rel="alternate" type="text/html" title="Gaming?! – Kostet extra!" />
+<published>2015-11-06T11:20:00+01:00</published>
+<updated>2015-11-06T11:20:00+01:00</updated>
+<id>http://localhost:4000/2015/11/06/Gaming?_Kostet_Extra</id>
+<content type="html" xml:base="http://localhost:4000/2015/11/06/Gaming-_Kostet_Extra.html">&lt;p&gt;Alexander Sander arbeitet als Geschäftsführer beim Digitale Gesellschaft e.V., der sich für Grundrechte und Verbraucherschutz im Netz einsetzt. Zuvor war er drei Jahre in Brüssel Mitarbeiter eines Mitglieds des Europäischen Parlaments. Er ist Gründer von NoPNR!, einer Kampagne gegen die Vorratsdatenspeicherung von Reisedaten, und Observer bei EDRi.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Marco Lehner:&lt;/strong&gt; Letzte Woche wurde im Europaparlament das Gesetz zur Netzneutralität verabschiedet. Es wissen aber noch nicht alle, was Netzneutralität eigentlich genau ist. Kannst du diesen Begriff kurz umreißen?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Alex Sander:&lt;/strong&gt; Netzneutralität bedeutet, dass alle Daten – unabhängig vom Absender, Empfänger oder Inhalt – gleich behandelt werden. Es wird also kein Unterschied gemacht, ob ich skype, eine Mail verschicke oder ein Video auf Youtube anschaue. Alle Daten werden gleich behandelt und dieses Prinzip nennt man Netzneutralität.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Marco Lehner:&lt;/strong&gt; Von dem verabschiedeten Gesetz hieß es im voraus, dass es für die Netzneutralität sei. Was steht denn genau in diesem Gesetz?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Alex Sander:&lt;/strong&gt; Das EU-Parlament hat darüber abgestimmt, welche Regulierung man in Europa für die Netzneutralität findet. Im Gesetzestext hat man sich aber auf sehr schwammige Formulierungen geeinigt. Es werden beispielsweise sogenannte Spezialdienste zugelassen. Das bedeutet, dass die Provider Streamingdienste oder Online-Gaming als Spezialdienst anbieten können und die Verbraucher dann extra bezahlen müssen, um diesen Dienst ruckelfrei nutzen zu können. Das Gleiche gilt aber auch für die Anbieter dieser Dienste. Youtube muss bei den Provider eine Überholspur kaufen, um seine Dienste den Verbrauchern ruckelfrei anbieten zu können. Die Provider verdienen also zu ihren jetzigen Einnahmen nochmal doppelt dazu.
+Das führt dazu, dass sich Verbraucher in einem Tarifdschungel wiederfinden werden, denn sie müssen sich Zusatzpakete wie ein Streaming- oder Gamingpaket hinzu bestellen. Andererseits wird auch Innovation gebührenpflichtig. Denn gerade Startups, die in der Vergangenheit immer dafür standen neue oder bessere Dienste auf den Markt zu bringen, werden jetzt vom Markt gedrängt. Auch Startups müssen sich Zusatzpakete kaufen obwohl sie ja generell mit wenig Geld auskommen müssen.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Marco Lehner:&lt;/strong&gt; Kann man sagen, dass dieses Gesetz zu einer weiteren Monopolisierung im Telekommunikationsmarkt führt?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Alex Sander:&lt;/strong&gt; Das ist das eine: Es ist eigentlich ein Gesetz zur Quersubventionierung der Provider. Es führt zum anderen dazu, dass das Internet auf dem Stand bleiben wird auf dem es jetzt ist, weil kaum mehr Innovation möglich ist. Interessant ist, dass es in den USA auch eine heftige Debatte um die Netzneutralität gab. Während der Debatte hat man aber gemerkt, dass ohne die Netzneutralität das Silicon Valley kaputt gehen würde. Deshalb hat man sich schlussendlich für eine gesetzliche Verankerung der Netzneutralität entschieden.
+In Europa wird seit Jahren davon gefaselt, einen Startup-Markt zu etablieren, mit solchen Entscheidungen wird er aber im Keim erstickt. Hier geht es nur darum, die wenigen Provider die bereits auf dem Markt sind weiter zu subventionieren.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Marco Lehner:&lt;/strong&gt; Um auf die Spezialdienste zurückzukommen: Wenn ich mir jetzt ein Video auf Youtube ansehen will, ruckelt es nicht. Wie argumentieren denn die Anbieter, warum Youtube ab sofort ein Spezialdienst sein soll?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Alex Sander:&lt;/strong&gt; Ab sofort stimmt hier nicht. Was die Telekom angekündigt hat, ist dass sie Startups zur Kasse bitten will. Die Provider scheinen also zuerst einmal von Unternehmen zu verlangen, dass sie Überholspuren kaufen. Das andere ist aber, dass sich das Best-Effort-Internet, also die ruckelfreie Verbindung zu Youtube, wie wir sie heute kennen in den kommenden Jahren deutlich verschlechtern wird. Die Provier kommen beim Breitbandausbau nicht hinterher und gleichzeitig steigt der Bedarf nach Diensten mit hohem Datendurchsatz. Das Best-Effort-Internet wird in den kommenden Jahren immer langsamer werden und hier werden die Provider ansetzen. Sie werden die datenintensiven Dienste zu Spezialdiensten machen, weil diese Dienste ansonsten nicht mehr ruckelfrei genutzt werden können. Der Verbraucher wird quasi dazu genötigt, diese Dienste zu kaufen – es sei denn, die Verordnung wird bis dahin reformiert und man einigt sich auf eine Verankerung der Netzneutralität in Europa.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Marco Lehner:&lt;/strong&gt; Michael Reimann von den Grünen wird auf heise.de zitiert, dass die vage Netzneutralitätsklausel auch eine Gefahr für die Demokratie darstelle. Ist das wirklich eine Gefahr für die Demokratie oder nur etwas unangenehm, weil man mehr zahlen muss?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Alex Sander:&lt;/strong&gt; Das ist tatsächlich ein Angriff auf die Demokratie und auf das Recht auf freie Meinungsäußerung, denn viele Debatten finden heute in sozialen Netzwerken wie Youtube statt. Wenn da Leute ausgeschlossen werden, weil sie sich keine Spezialdienste leisten können, können sie auf dieser Plattform auch nicht mehr am Meinungsbildungsprozess teilnehmen. Dadurch entstehen auch Probleme für die Demokratie.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Marco Lehner:&lt;/strong&gt; Ist von der Digitalen Gesellschaft denn Protest geplant?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Alex Sander:&lt;/strong&gt; Gerade nachdem eine Verordnung verabschiedet wurde, ist nicht davon auszugehen, dass direkt am Tag danach mit einer Reform begonnen wird. Gleichwohl hat Günther Öttinger, der zuständige EU-Kommissar, bereits angekündigt, er bereit ist nochmals über die Verordnung nachzudenken, wenn die Bedenken der Zivilgesellschaft zutreffen sollten. Das ist jetzt schon der Fall, weil die Telekom zwei Tage nach der Abstimmung bereits angekündigt hat Startups zur Kasse zu bitten. Damit sind unsere Bedenken tatsächlich wahr geworden. Wir fordern jetzt von Günther Öttinger, dass er die entsprechenden Reformen einleiten wird. Ob er das tatsächlich tun wird, ist aber anzuzweifeln. In der Vergangenheit hat sich Günther Öttinger schon als Vertreter der Lobbyisten präsentiert, er hat uns in der Debatte sogar vorgeworfen, dass wir unsere Argumente talibanartig vortragen würden. Er ist also kein großer Freund von NGOs und Bürgerrechtsgruppen.
+Momentan ist es aber noch zu früh, die Bürgerbeteiligung zu intensivieren, wir müssen erst abwarten wie die Provider reagieren und wie die Regulierungsbehörden vorgehen. Wenn es dann soweit ist werden wir auf unseren Blogs zu Protest aufrufen.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Marco Lehner:&lt;/strong&gt; Im Gesetzesentwurf ging es ja nicht nur um die Netzneutralität, es wurde auch beschlossen die Roaming-Gebühren zu senken. Ist das denn wenigstens gut oder ist hier auch etwas versteckt?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Alex Sander:&lt;/strong&gt; Grundsätzlich ist das natürlich schön, wenn Roaminggebühren gesenkt werden. Der Plan der EU-Kommission war ohnehin, das bis 2018 zu machen. Jetzt hat man das um ein Jahr verkürzt. Bis 2017 sollen die Roaminggebühren fallen aber dafür hat man gleichzeitig die Netzneutralität geopfert. Ob man damit der Zivilgesellschaft einen Gefallen getan hat, wagen wir ernsthaft zu bezweifeln. Die wenigsten werden die Vorteile niedrigerer Roaminggebühren so ausnutzen können, dass sie damit die Nachteile der weggefallenen Netzneutralität kompensieren können. Hier haben vor allem Menschen die viel reisen einen Vorteil, aber hierfür die Netzneutralität zu opfern ist nicht verhältnismäßig.&lt;/p&gt;
+</content>
+<summary>Alexander Sander arbeitet als Geschäftsführer beim Digitale Gesellschaft e.V., der sich für Grundrechte und Verbraucherschutz im Netz einsetzt. Zuvor war er drei Jahre in Brüssel Mitarbeiter eines Mitglieds des Europäischen Parlaments. Er ist Gründer von NoPNR!, einer Kampagne gegen die Vorratsdatenspeicherung von Reisedaten, und Observer bei EDRi.</summary>
+</entry>
+<entry>
+<title>Fast Slow Journalism</title>
+<link href="http://localhost:4000/2015/10/29/Fast_Slow_Journalism.html" rel="alternate" type="text/html" title="Fast Slow Journalism" />
+<published>2015-10-29T11:20:00+01:00</published>
+<updated>2015-10-29T11:20:00+01:00</updated>
+<id>http://localhost:4000/2015/10/29/Fast_Slow_Journalism</id>
+<content type="html" xml:base="http://localhost:4000/2015/10/29/Fast_Slow_Journalism.html">&lt;p&gt;Während Rob Orchard auf der Bühne steht und über Slow Journalism referiert, sitze ich im Publikum und schreibe an dem Artikel über Slow Journalism. Ich komme mir dabei zusehends blöder vor, erfülle ich doch im Moment alles, was Orchard an den neueren Entwicklungen des (Online-)Journalismus angreift:&lt;/p&gt;
+
+&lt;p&gt;„Die klassischen Online-Medien sind immer im Wettlauf mit Twitter“, sagt er und schon fühle ich mich ertappt. Ich wechsle auf Twitter und sehe, dass alles was in diesem Artikel stehen wird bereits auf Twitter nachzulesen ist. Es ist wie mit dem Hasen und dem Igel. Nur weiß ich nicht, wer hier Hase und wer Igel ist.&lt;/p&gt;
+
+&lt;p&gt;Die nächste Folie trifft mich genauso: „Die Medien sind abhängig von der PR.“ Was mache ich hier gerade, wenn nicht PR für Delayed Gratification, das Magazin von Orchard? Immerhin bin ich damit in guter Gesellschaft: Orchard erzählt von LIVR – einem PR-Hoax, der vor einigen Jahren von vielen großen Zeitungen abgedruckt wurde. Ohne die Pressemitteilung gegenzuchecken – einfach Copy-Paste. Immerhin habe ich neben mir eine Print-Ausgabe von Delayed Gratification liegen, so schlimm wird es also nicht sein.&lt;/p&gt;
+
+&lt;h2 id=&quot;lange-storys-für-den-ohrensessel&quot;&gt;Lange Storys für den Ohrensessel&lt;/h2&gt;
+&lt;p&gt;Das Konzept Slow Journalism setzt darauf, Storys erst aufzugreifen wenn sie vom Tagesjournalismus nicht mehr angegangen werden. Orchard sieht darin die Möglichkeit, Geschichten in die Tiefe behandeln zu können und auch nur wirklich relevantes in sein Magazin zu nehmen. Dem Magazin ist anzumerken, dass es in der Redaktion nicht hektisch zuging. Lange Reportagen, hübsch bebildert und immer wenn es schwer wird, gibt es eine Infografik. „Ich will, dass sich die Menschen ein Pause gönnen, wenn sie unser Magazin lesen“, sagt Orchard noch auf der Bühne. Das Magazin soll dazu einladen, es sich mit einem Glas Whiskey und einer Pfeife (er ist Engländer) im Ohrensessel gemütlich zu machen.&lt;/p&gt;
+
+&lt;p&gt;Die Haptik des Buches strahlt tatsächlich etwas hochwertiges aus und ich kann mir vorstellen, wie ich mit der Delayed Gratification und einem Glas Whiskey im Sessel sitze. Doch ist es mit dem Slow Journalism das selbe wie mit dem Slow Food. Zwar stimmt beim Party-Smalltalk jeder zu, dass ein gutes Mittagessen in der sympathischen Suppenbar etwas tolles ist, meistens wird’s dann doch der Döner. Natürlich sage ich, dass lange, gut recherchierte Reportagen mir wichtiger sind als die Google-News-Schnipsel und trotzdem kontrolliere ich meist nur die Google-News; Ich spare mir die 79 Cent auf Blendle und die halbe Stunde für den aufwendigen Hintergrundbericht.&lt;/p&gt;
+
+&lt;p&gt;Außerdem lese ich Geschichten, weil ich mit anderen Menschen darüber reden will oder weil ich etwas vom aktuellen Lauf der Welt mitbekommen möchte. Delayed Gratification geht den anderen Weg. Sie drucken Storys für die es seit drei Monaten keine Öffentlichkeit mehr gibt, und dafür soll ich 14 Euro zahlen?&lt;/p&gt;
+</content>
+<summary>Während Rob Orchard auf der Bühne steht und über Slow Journalism referiert, sitze ich im Publikum und schreibe an dem Artikel über Slow Journalism. Ich komme mir dabei zusehends blöder vor, erfülle ich doch im Moment alles, was Orchard an den neueren Entwicklungen des (Online-)Journalismus angreift:</summary>
+</entry>
+<entry>
+<title>Der Kampf um die Standards der industriellen Revolution</title>
+<link href="http://localhost:4000/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution.html" rel="alternate" type="text/html" title="Der Kampf um die Standards der industriellen Revolution" />
+<published>2015-10-28T11:20:00+01:00</published>
+<updated>2015-10-28T11:20:00+01:00</updated>
+<id>http://localhost:4000/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution</id>
+<content type="html" xml:base="http://localhost:4000/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution.html">&lt;p&gt;Die älteste Initiative ist Industrie 4.0 aus Deutschland – sie wurde 2011 auf der Hannover Messe vorgestellt. Inzwischen hat sich das Konzept zur Hightech-Strategie der Bundesregierung weiterentwickelt, um deutsche Firmen, allen voran den Mittelstand, fit für die vernetzte Produktion der Zukunft zu machen. Die Branchenverbände der Maschinen- und Anlagenbauer (VDMA), der Elektroindustrie (ZVEI) und der Telekommunikations- und Informatikwirtschaft (Bitkom) sind an der Umsetzung der Strategie mit beteiligt. Industrie 4.0 und das französische Pendant Industrie du Futur beraten zur Zeit eine Fusion.
+Das Industrial Internet Consortium (IIC) dagegen hat sich 2014 direkt aus einem Zusammenschluss, größtenteils amerikanischer, Firmen gebildet. Doch es kommen immer mehr internationale Firmen hinzu: Inzwischen sind auch Siemens, Fujitsu oder Bosch Mitglied im IIC. Richard Soley, der Botschafter des IIC wurde auf dem diesjährigen Maschinenbaugipfel in Berlin nicht müde zu betonen, dass das IIC keine amerikanische Interessenvertretung sei. Auf der LinkedIn-Seite des IIC steht trotzdem: „Das IIC wird die Entstehung des Industrial Internets, das grundlegend für die Konkurrenzfähigkeit amerikanischer Firmen in industriellen Schlüsselsektoren ist, ermöglichen und beschleunigen“. Das IIC legt dabei seinen Schwerpunkt weniger auf die Vernetzung innerhalb der Fabrik, sondern auf die Vernetzung der gesamten Wertschöpfungskette.
+Auch in Japan wurde im Juni 2015 ein Pendant zur Industrie 4.0 Plattform der Bundesregierung gegründet: Die Industrial Value Chain Initiative (IVI). Dieses findet strukturell einen Mittelweg zwischen den beiden länger existierenden Plattformen. Wie das IIC wurde es von Unternehmen gegründet, auch hier vor allem japanische. In der Strategie ähneln sie den deutschen: „Wir wollen eine Struktur etablieren, die es uns ermöglicht, selbst kleine und mittelständische Unternehmen über das Internet firmen- und branchenübergreifend zu verbinden“, wird IVI Chef Yasuyuki Nishioka auf nikkei.com zitiert.&lt;/p&gt;
+
+&lt;h2 id=&quot;gleiches-ziel--verschiedene-strategien&quot;&gt;Gleiches Ziel – Verschiedene Strategien&lt;/h2&gt;
+&lt;p&gt;Allen Initiativen ist gemein, dass sie Standards und Architekturen schaffen wollen, die eine vernetzte Produktion ermöglichen. Die einzelnen Initiativen unterscheiden sich dabei teils stark in der Herangehensweise. „In den USA wollen sie viele kleine Schritte so schnell wie möglich machen. In Deutschland sind die Anstrengungen theoretischer: Zuerst soll das Modell gefunden werden und dann wird zur Umsetzung gegangen“, zitiert Bloomberg den Industrie 4.0 Beauftragten des VDMA, Rainer Glatz. Das mag auch einer der Gründe sein, warum der deutschen Industrie 4.0 oft vorgeworfen wird, zu langsam in der Umsetzung von Industrie 4.0 Technologien zu sein. Der Blick auf die Zahlen widerlegt dies jedoch: Während 2013 nur 10 Prozent der befragen Informatik- und Telekommunikationsunternehmen Technologien für die Industrie 4.0 entwickelten sind es 2015 bereits 31 Prozent.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;{{site.url}}/assets/statista_i40.png&quot; alt=&quot;Statistik&quot; class=&quot;post_img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;industrie-40-gut-im-rennen&quot;&gt;Industrie 4.0 gut im Rennen&lt;/h2&gt;
+&lt;p&gt;Zur Zeit liegt Industrie 4.0 im Wettlauf um die neuen Standards außerdem ganz gut im Rennen: Bereits zur Hannover Messe diesen Jahres wurde das RAMI 4.0, das Referenzarchitekturmodell für Industrie 4.0, vorgestellt. Ein Referenzarchitekturmodell regelt praktisch die „Sprache“ mit der die einzelnen Komponenten sowohl in als auch zwischen Firmen kommunizieren. Nun muss die deutsche Industrie das Referenzarchitekturmodell nur noch umsetzen.&lt;/p&gt;
+</content>
+<summary>Die älteste Initiative ist Industrie 4.0 aus Deutschland – sie wurde 2011 auf der Hannover Messe vorgestellt. Inzwischen hat sich das Konzept zur Hightech-Strategie der Bundesregierung weiterentwickelt, um deutsche Firmen, allen voran den Mittelstand, fit für die vernetzte Produktion der Zukunft zu machen. Die Branchenverbände der Maschinen- und Anlagenbauer (VDMA), der Elektroindustrie (ZVEI) und der Telekommunikations- und Informatikwirtschaft (Bitkom) sind an der Umsetzung der Strategie mit beteiligt. Industrie 4.0 und das französische Pendant Industrie du Futur beraten zur Zeit eine Fusion.Das Industrial Internet Consortium (IIC) dagegen hat sich 2014 direkt aus einem Zusammenschluss, größtenteils amerikanischer, Firmen gebildet. Doch es kommen immer mehr internationale Firmen hinzu: Inzwischen sind auch Siemens, Fujitsu oder Bosch Mitglied im IIC. Richard Soley, der Botschafter des IIC wurde auf dem diesjährigen Maschinenbaugipfel in Berlin nicht müde zu betonen, dass das IIC keine amerikanische Interessenvertretung sei. Auf der LinkedIn-Seite des IIC steht trotzdem: „Das IIC wird die Entstehung des Industrial Internets, das grundlegend für die Konkurrenzfähigkeit amerikanischer Firmen in industriellen Schlüsselsektoren ist, ermöglichen und beschleunigen“. Das IIC legt dabei seinen Schwerpunkt weniger auf die Vernetzung innerhalb der Fabrik, sondern auf die Vernetzung der gesamten Wertschöpfungskette.Auch in Japan wurde im Juni 2015 ein Pendant zur Industrie 4.0 Plattform der Bundesregierung gegründet: Die Industrial Value Chain Initiative (IVI). Dieses findet strukturell einen Mittelweg zwischen den beiden länger existierenden Plattformen. Wie das IIC wurde es von Unternehmen gegründet, auch hier vor allem japanische. In der Strategie ähneln sie den deutschen: „Wir wollen eine Struktur etablieren, die es uns ermöglicht, selbst kleine und mittelständische Unternehmen über das Internet firmen- und branchenübergreifend zu verbinden“, wird IVI Chef Yasuyuki Nishioka auf nikkei.com zitiert.</summary>
+</entry>
+<entry>
+<title>Roboterjournalismus - Journalismus aus der Dose</title>
+<link href="http://localhost:4000/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose.html" rel="alternate" type="text/html" title="Roboterjournalismus - Journalismus aus der Dose" />
+<published>2015-10-19T12:20:00+02:00</published>
+<updated>2015-10-19T12:20:00+02:00</updated>
+<id>http://localhost:4000/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose</id>
+<content type="html" xml:base="http://localhost:4000/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose.html">&lt;p&gt;Während der letzten Minuten eines Fußballspiels gelangen die Spieler an ihre physische Grenze. Die Fans haben sich heiser geschrien und auch die Sportjournalisten haben Stress: Es bleibt nur noch eine Stunde, um den Artikel in die morgige Ausgabe zu bringen. Bald hat sich das erledigt. Das Fußballportal FussiFreunde arbeitet über die Sommerpause an einem Programm, um die Spielberichte von einem Roboter schreiben zu lassen. Dabei sitzt natürlich kein Roboter an einer Schreibmaschine, um über das Spiel zu berichten. „Aber ob das im Wortsinne richtig ist, ist eher eine Spitzfindigkeit“, sagt Johannes Sommer, Geschäftsführer von Retresco, der Fussifreunde bei der Umsetzung ihrer automatisch geschriebenen Texte unterstützt. „Es stellt plakativ dar, was passiert: Ein Programm generiert einen Text.“&lt;/p&gt;
+
+&lt;h2 id=&quot;automatisch-geschrieben-von-rtr-text-engine&quot;&gt;Automatisch geschrieben von rtr text engine&lt;/h2&gt;
+
+&lt;p&gt;Bisher sind auf Fussifreunde nur die Vorberichte zu vielen Spielen automatisch generiert. Darauf weist das Portal offensiv hin – unter jedem automatisch geschriebenem Artikel steht der Vermerk „automatisch geschrieben von rtr text engine“. Dirk Becker, Redakteur bei Fussifreunde, sah sich dazu in der Pflicht, die Leser aufzuklären, woher die Texte stammen. „Wir haben aber keinerlei negatives Feedback bekommen, ganz im Gegenteil – die Zielgruppe ist jung und technikaffin und war eher begeistert davon, dass da auf einmal automatisch generierte Texte dabei sind“. Hinzu kommt, dass das Portal nun statt drei über 100 Vorberichte pro Woche auf der Seite hat – „wir haben auf einmal in den untersten Ligen Texte, die wir so gar nicht im Angebot hatten“, meint Becker. Dadurch fühlen sich die Fans der unteren Ligen mehr gewertschätzt, denn sie erfahren jetzt eine Art der medialen Zuwendung, wie sie bisher Top-Clubs vorbehalten war.
+Früher konnte sich es keine Redaktion leisten, bis in die Kreisklasse Vorberichte von einem Reporter schreiben zu lassen. Heute kann das ein Programm übernehmen, dass auf eine Datenbank zugreift. Diese Datenbank wird mit den Spielberichten der Schiedsrichter gefüttert und kann vom Deutschen Fußballbund abonniert werden. „Doch in der Datenbank steht etwas, dass nicht sprachlich verarbeitet ist. Diese Dinge müssen deutschen Wörtern zugeordnet werden“, erklärt Stephan Busemann, Computerlinguist am Deutschen Forschungszentrum für künstliche Intelligenz. Für Journalisten ist es ein leichtes, diese Daten in einen Satz zu gießen. Das Programm muss dafür den umgekehrten Weg gehen: Es baut zuerst die Struktur des ganzen Artikels und dann den Aufbau der einzelnen Sätze. Dabei kommt es dem Programm zugute, dass Berichte ohnehin einem sehr striktem Muster folgen.&lt;/p&gt;
+
+&lt;h2 id=&quot;auch-roboter-können-sprachliche-abwechslung&quot;&gt;Auch Roboter können sprachliche Abwechslung&lt;/h2&gt;
+&lt;p&gt;Ein klassischer Einstieg in einen Vorbericht ist es, ihn mit dem Tabellenplatz der Gastgeber zu beginnen. „Ich muss mir also den Tabellenplatz und den Namen der Mannschaft aus der Datenbank suchen. Dann muss ich mich entscheiden, mit welcher sprachlichen Konstruktion ich darüber sprechen will. Dafür muss ich mir ein Inventar vorhalten“, so Busemann. Durch das Inventar bekommt das Programm die Möglichkeit abwechslungsreicher zu schreiben, also nicht immer nur von der Mannschaft, sondern auch einmal von „dem Gastgeber“ oder „der Elf von Trainer XY“. „Ich habe an dieser Stelle aber noch keine richtigen Wörter eingesetzt, sondern das sind noch präverbale Dinge“, so Busemann weiter. Das Programm weiß also schon, was es ausdrücken will aber noch nicht wie. Dafür greift es auf sein Inventar an möglichen Formulierungen zurück. Der Datenbankeintrag mit dem Namen der Mannschaft ist dafür mit den Formulierungen „Der Gastgeber“ und „die Elf von Trainer XY“ verknüpft, aus welchen das Programm auswählt. Diese werden dann in einem Satz aneinandergereiht und grammatisch richtig gestellt.&lt;/p&gt;
+
+&lt;h2 id=&quot;fußball-ist-für-roboterjournalismus-prädestiniert&quot;&gt;Fußball ist für Roboterjournalismus prädestiniert&lt;/h2&gt;
+&lt;p&gt;Gerade der Fußball ist laut Andreas Sommer prädestiniert für die automatische Berichterstattung, denn es gibt viele wiederkehrende Daten. Diese sind sehr strukturiert in verschiedenen Datenbanken aufbereitet. So kann leicht auf sie zugegriffen werden. Die festen Phrasen im Sportjournalismus machen es aber nicht leichter. „Wenn man sich mal in den Finanzbereich vorwagt, dann ist der nicht so sehr von Phrasen geprägt. Es gibt einfach eine andere Sprache und diese Sprache im entsprechenden Kontext abzubilden, ist unsere Aufgabe.“
+Die Einsatzmöglichkeiten im Finanzbereich beschränken sich noch auf Berichte – faktenorientiert und emotionslos. Die große Herausforderung ist derzeit, der Maschine beizubringen, wie sie emotionales ausdrücken kann. „Gerade der Fußball bringt viele Emotionen und Leidenschaften mit sich. Das ist nicht so einfach zu handhaben wie ein Vorbericht, gerade wenn man auch mal subjektiv sein will“, sagt Becker in Hinblick auf sein Vorhaben, auch Spielberichte automatisch schreiben zu lassen.&lt;/p&gt;
+
+&lt;h2 id=&quot;meinung-bleibt-sache-des-menschen&quot;&gt;Meinung bleibt Sache des Menschen&lt;/h2&gt;
+&lt;p&gt;Der Sportjournalist Markus Kaiser hingegen ist sich sicher, dass es den Journalisten vorbehalten bleibt, Einordnungen zu treffen, Reportagen und Features zu schreiben. Die meinungsstarken Formen eben. „Man kann einen Journalisten nur dort ersetzen, wo es darum geht stupide Ergebnisse, Statistiken und Zahlen in Textform zu gießen“. Doch selbst das sieht Kaiser kritisch. Er ist der Ansicht, dass es bessere Möglichkeiten gibt, Datenbankinhalte aufzubereiten, als sie von einem Programm in Text übersetzen zu lassen. „Stichwort multimediales Storytelling – warum lasse ich nicht gleich die Statistik für sich stehen?“, fragt er.
+Dirk Becker sieht es vor allem als Arbeitserleichterung an, Texte automatisch generieren zu lassen. „Vorberichte sind eine Sache, die für den Redakteur keine richtige Herausforderung darstellen.“ So hat der Redakteur mehr Zeit für die journalistischen Formen, die mehr in die Tiefe gehen und ganz nebenbei auch mehr Spaß machen.&lt;/p&gt;
+</content>
+<summary>Während der letzten Minuten eines Fußballspiels gelangen die Spieler an ihre physische Grenze. Die Fans haben sich heiser geschrien und auch die Sportjournalisten haben Stress: Es bleibt nur noch eine Stunde, um den Artikel in die morgige Ausgabe zu bringen. Bald hat sich das erledigt. Das Fußballportal FussiFreunde arbeitet über die Sommerpause an einem Programm, um die Spielberichte von einem Roboter schreiben zu lassen. Dabei sitzt natürlich kein Roboter an einer Schreibmaschine, um über das Spiel zu berichten. „Aber ob das im Wortsinne richtig ist, ist eher eine Spitzfindigkeit“, sagt Johannes Sommer, Geschäftsführer von Retresco, der Fussifreunde bei der Umsetzung ihrer automatisch geschriebenen Texte unterstützt. „Es stellt plakativ dar, was passiert: Ein Programm generiert einen Text.“</summary>
+</entry>
+<entry>
+<title>Vorratsdatenspeicherung - The Neverending Story</title>
+<link href="http://localhost:4000/2015/10/16/Vorratsdatenspeicherung_the_neverending_story.html" rel="alternate" type="text/html" title="Vorratsdatenspeicherung - The Neverending Story" />
+<published>2015-10-16T12:20:00+02:00</published>
+<updated>2015-10-16T12:20:00+02:00</updated>
+<id>http://localhost:4000/2015/10/16/Vorratsdatenspeicherung_the_neverending_story</id>
+<content type="html" xml:base="http://localhost:4000/2015/10/16/Vorratsdatenspeicherung_the_neverending_story.html">&lt;p&gt;Das neue Gesetz zur Vorratsdatenspeicherung hat heute den Bundestag passiert. Obwohl das Gesetz klar mit 404 Stimmen angenommen wurde, zeigt sich im Abstimmungsverhalten auch, wie kontrovers das Gesetz aufgenommen wird. Mindestens 21 Abgeordnete der großen Koalition haben ihre Fraktionsdisziplin verletzt und gegen das Gesetz gestimmt.&lt;/p&gt;
+
+&lt;p&gt;Die Anbieter von Kommunikationsdiensten haben ab jetzt 18 Monate Zeit um die Infrastruktur zu erstellen. Der Verband der deutschen Internetwirtschaft Eco beziffert die Kosten auf etwa 600 Millionen Euro. Die Vorratsdatenspeicherung ist laut Eco eine „netzpolitische Fehlentscheidung, die nur Verlierer kennt.&lt;/p&gt;
+
+&lt;h2 id=&quot;jetzt-mit-standortdaten&quot;&gt;Jetzt mit Standortdaten&lt;/h2&gt;
+&lt;p&gt;Gespeichert werden sollen alle Verbindungsdaten, also beispielsweise IP-Adressen ,Telefonnummern und Dauer sowie Uhrzeit der jeweiligen Gespräche. Bei Gesprächen mit dem Handy wird auch die Funkzelle gespeichert. Über die Funkzelle lässt sich ermitteln, wo das Handy war als mit ihm telefoniert wurde. Das könnte theoretisch dazu benutzt werden, nachträglich Bewegungsprofile von überwachten Personen zu erstellen. Das sieht das neue Gesetz aber ausdrücklich nicht vor. Es soll nur erlaubt sein, einzelne Funkzellen abzufragen, beispielsweise um zu kontrollieren, ob mit einem Handy an einem Tatort telefoniert wurde oder nicht. Die Süddeutsche berichtete heute, dass bei der Speicherung von SMS nicht nur die Verbindungsdaten, sondern auch der Inhalt der SMS gespeichert werden würde. Verantwortlich dafür ist ein technisches Problem.&lt;/p&gt;
+
+&lt;p&gt;Zuletzt wurde 2007 versucht, die Vorratsdatenspeicherung in Deutschland gesetzlich zu verankern. Dieser Versuch ist aber 2010 vor dem Bundesverfassungsgericht gescheitert. Das Bundesverfassungsgericht führte damals vor allem an, dass das Gesetz zur Vorratsdatenspeicherung keine Maßnahmen zur Datensicherheit vorsehen würde und die Hürden für den staatlichen Zugriff zu niedrig wären. Das Bundesverfassungsgericht hat damals einen sehr konkreten Katalog an Vorschlägen in sein Urteil gepackt, wann es ein Gesetz zur Vorratsdatenspeicherung mittragen würde. Der neue Anlauf die Vorratsdatenspeicherung zu etablieren, trägt dem zwar Rechnung, bleibt im Kern jedoch gleich. Wieder sollen die Verbindungen von allen Deutschen protokolliert und gespeichert werden. Verdachtsunabhängig und Massenhaft.&lt;/p&gt;
+
+&lt;h2 id=&quot;kürzere-speicherfristen&quot;&gt;Kürzere Speicherfristen&lt;/h2&gt;
+&lt;p&gt;Die Daten sollen wie bisher bei den Anbietern der Kommunikationsdienste gespeichert werden. Allerdings wesentlich kürzer als beim alten Gesetz von 2007. Nur noch 2 ½ Monate statt 6 Monate sollen die Daten gespeichert werden. Dafür sind im neuen Gesetz auch Standortangaben mit eingeschlossen, 2007 war dies noch nicht der Fall.&lt;/p&gt;
+
+&lt;p&gt;Der Zugriff auf die Telekommikationsdaten ist nur der Polizei und der auch nur nach richterlichem Beschluss gestattet. Geheimdienste dürfen nicht auf die Telekommunikationsdatenbank zugreifen. Der Straftatenkatalog, bei welchem die Polizei auf die Telekommunikationsdaten zugreifen kann, ähnelt dem, bei welchem auch eine Verwanzung der Privatwohnung in Frage käme. Wie Bundesjustizminister Maas vor einem halben Jahr sagte, fallen nur schwere Straftaten wie Mord, Totschlag, Terrorismus, schwere Sexualdelikte und das „Einschleusen von Ausländern“ zu den Straftaten, die den Zugriff gestatten.&lt;/p&gt;
+
+&lt;h2 id=&quot;verschlüsselte-vorratsdatenspeicherung&quot;&gt;Verschlüsselte Vorratsdatenspeicherung&lt;/h2&gt;
+&lt;p&gt;Um den Anforderungen des Bundesverfassungsgerichts gerecht zu werden, sollen die Daten durch besonders sichere Verschlüsselungsverfahren gesichert werden. Dadurch soll verhindert werden, dass Kriminelle oder Geheimdienste auf die Daten zugreifen können. Welche Verschlüsselungsverfahren genau eingesetzt werden sollen, ist aber noch nicht klar.&lt;/p&gt;
+</content>
+<summary>Das neue Gesetz zur Vorratsdatenspeicherung hat heute den Bundestag passiert. Obwohl das Gesetz klar mit 404 Stimmen angenommen wurde, zeigt sich im Abstimmungsverhalten auch, wie kontrovers das Gesetz aufgenommen wird. Mindestens 21 Abgeordnete der großen Koalition haben ihre Fraktionsdisziplin verletzt und gegen das Gesetz gestimmt.</summary>
+</entry>
+<entry>
+<title>Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche</title>
+<link href="http://localhost:4000/2015/05/27/Es_gibt_kein_sicheres_Internet.html" rel="alternate" type="text/html" title="Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche" />
+<published>2015-05-27T12:20:00+02:00</published>
+<updated>2015-05-27T12:20:00+02:00</updated>
+<id>http://localhost:4000/2015/05/27/Es_gibt_kein_sicheres_Internet</id>
+<content type="html" xml:base="http://localhost:4000/2015/05/27/Es_gibt_kein_sicheres_Internet.html">&lt;p&gt;„Das Internet ist ein Informationssystem, dass über viele Jahre und Jahrzehnte gewachsen ist, ein komplexes Ökosystem, dass von vielen Menschen gemacht wurde. Es ist organisch gewachsen, folglich hat es Probleme – gerade was die Sicherheit angeht. Fehler auf jeder Ebene können zu Angriffen führen“, so Michael Backes, Professor an der Universität des Saarlands. „Wenn ich eine Ebene brechen kann sind mir die anderen egal. Die bestehenden Systeme wurden auch nicht entworfen, um a priori sicher zu sein. Sie wurden entworfen um nützlich zu sein. Sicherheit war kein Designkriterium des Internets.“&lt;/p&gt;
+
+&lt;p&gt;Der Weg aller Soft- und Hardware ist eine lange Kette, die in dem Rechner endet, der jetzt vor Ihnen auf dem Tisch steht. Die Kette beginnt in verschiedenen Firmen, welche die Einzelteile des Rechners produzieren, diese versenden und zusammensetzen. Auch durch schlechte Sicherheitstechnologien, online und offline, werden Angriffe ermöglicht.&lt;/p&gt;
+
+&lt;h2 id=&quot;trojaner-sind-ab-werk-auf-den-chips&quot;&gt;Trojaner sind ab Werk auf den Chips&lt;/h2&gt;
+&lt;p&gt;Ein Angriff kann schon im ersten Glied der Kette erfolgen: In der Planungsphase der Hardware. Es ist möglich die Chips so zu entwerfen, dass in ihnen Malware integriert ist, denn jede Softwarerealisierung ist maximal so gut, wie die Hardware, auf der sie basiert. „Es wurde gezeigt, dass selbst Hardwarechips inzwischen aufgeätzte also aufgelötete Komponenten haben, die bereits Hintertüren sind – in Ihrem Rechner. Egal was sie aufspielen – sie haben verloren. In dem Moment“, so Michael Backes.&lt;/p&gt;
+
+&lt;p&gt;Ein Nutzer kann das nicht nachvollziehen, denn äußerlich ist dem Chip nicht anzusehen, ob er mit einer Schaltung versehen ist, die für Angreifer eine Hintertür öffnet. Auch mit Antivirusprogrammen ist dieser Art des Angriffs nicht beizukommen. Wenn überhaupt kann man diesen Angriff nur erkennen, wenn man die Pläne der Leiterplatte einsehen kann. Diese behalten die Firmen allerdings für gewöhnlich unter Verschluss.&lt;/p&gt;
+
+&lt;p&gt;Der Angriff kann auch während des Versandes stattfinden. Michael Backes weiß von Vorfällen, „wo einfach gewisse Dinge ausgetauscht wurden. Es gibt Beispiele, wo Sie einen USB-Stick aus der eingeschweißten Verpackung nehmen und der hat schon einen Virus drauf.“&lt;/p&gt;
+
+&lt;h2 id=&quot;jeder-kann-einen-emailaccount-hacken&quot;&gt;Jeder kann einen Emailaccount hacken&lt;/h2&gt;
+&lt;p&gt;Bei vielen Mailaccounts kann das Passwort zurückgesetzt werden, indem persönliche Fragen beantwortet werden. „Wie war der Name deines ersten Haustieres?“ oder „Wie heißt dein Lieblingsfußballverein?“ sind typische Fragen. Die Verwalter der Mailaccounts davon aus, dass nur die jeweiligen Personen solche persönlichen Dinge über sich wissen. Viele dieser Informationen sind öffentlich über soziale Netzwerke wie Facebook einzusehen. Der Angreifer muss nur auf das jeweilige Profil gehen und die Information in das Formular eintragen. Dann kann er das Passwort neu setzen und hat Zugriff auf das Mailkonto. Dieser Angriff kann von praktisch jedem durchgeführt werden, der nur ein bisschen etwas darüber weiß, wie soziale Netzwerke und Suchmaschinen funktionieren.&lt;/p&gt;
+
+&lt;p&gt;Professionelle Angreifer haben ganz andere Möglichkeiten. Diese professionellen Angreifer sind keine einzelnen Personen, sondern ganze Unternehmen: Geheimdienste, Militärs und gut organisierte Kriminelle. Diese haben Milliarden an Dollar im Rücken um mit großen Teams von Entwicklerinnen Schadsoftware zu programmieren.&lt;/p&gt;
+
+&lt;p&gt;Auch Verschlüsselung kann in einer früheren Phase gebrochen werden: „Erste Stelle ist mal nicht die Kryptographie algorythmisch, sondern die Art und Weise wie sie realisiert wird anzugreifen. Die NSA tut sich, nach allem was wir wissen, schwer Kryptographie zu brechen. Also schwächt die NSA die Verschlüsselung ab.“ Die NSA sitzt in einem Gremium, welches die Grundlage für die Berechnung von Zufallszahlen bestimmt. Zufallszahlen sind wichtig, um eine sichere Verschlüsselung zu gewährleisten. Wenn der Zahlenraum kleiner wird, in welchem sich die Zufallszahlen bewegen, ist die Verschlüsselung leichter zu brechen.&lt;/p&gt;
+
+&lt;h2 id=&quot;schlüssel-oder-gefängnis&quot;&gt;Schlüssel oder Gefängnis&lt;/h2&gt;
+&lt;p&gt;Wenn das alles nichts hilft, es keine Angriffspunkte gibt, ist es der NSA als staatlicher Organisation auch noch möglich, den Rechtsweg zu beschreiten. Verdächtige werden unter Androhung von Strafe dazu gezwungen ihre geheimen Schlüssel herauszugeben.
+„Die NSA bemüht dazu das Konzept des Securityletters – das ist nichts anderes als ein eingeschriebener Brief, in dem steht „Wir sind die NSA, bitte Schlüssel aushändigen oder Gefängnis und du darfst nicht darüber reden, sonst Gefängnis.“, so Michael Backes. Durch das auferlegte Redeverbot ist dieses Vorgehen auch nicht nachweisbar.&lt;/p&gt;
+
+&lt;p&gt;In den meisten Fällen sind all dies viel leichtere Möglichkeiten an die gewünschten Daten zu kommen, als tatsächlich die Verschlüsselung zu brechen. In Anbetracht des finanziellen Backgrounds, der Expertise in den Geheimdiensten und den kriminellen Hackergruppen ist es praktisch unmöglich einen Rechner gegen diese Angreifer sicher zu machen. Aber was man als Nutzer, als Nutzerin machen kann: Man kann den Angreifern das Leben schwer machen, den nichts ist so leicht zu lesen wie unverschlüsselte Kommunikation.&lt;/p&gt;
+</content>
+<summary>„Das Internet ist ein Informationssystem, dass über viele Jahre und Jahrzehnte gewachsen ist, ein komplexes Ökosystem, dass von vielen Menschen gemacht wurde. Es ist organisch gewachsen, folglich hat es Probleme – gerade was die Sicherheit angeht. Fehler auf jeder Ebene können zu Angriffen führen“, so Michael Backes, Professor an der Universität des Saarlands. „Wenn ich eine Ebene brechen kann sind mir die anderen egal. Die bestehenden Systeme wurden auch nicht entworfen, um a priori sicher zu sein. Sie wurden entworfen um nützlich zu sein. Sicherheit war kein Designkriterium des Internets.“</summary>
+</entry>
+<entry>
+<title>Was isst du auf dem Weg nach Malle?</title>
+<link href="http://localhost:4000/2015/05/05/No_PNR.html" rel="alternate" type="text/html" title="Was isst du auf dem Weg nach Malle?" />
+<published>2015-05-05T12:20:00+02:00</published>
+<updated>2015-05-05T12:20:00+02:00</updated>
+<id>http://localhost:4000/2015/05/05/No_PNR</id>
+<content type="html" xml:base="http://localhost:4000/2015/05/05/No_PNR.html">&lt;p&gt;Fluggesellschaften brauchen eine große Menge an Daten um eine Flugreise zu organisieren. Dafür legen Fluggesellschaften eine Passenger Name Record (PNR) an. Diese PNR entält alle wichtigen und weniger wichtigen Daten über die einzelnen Passagiere. So ist in der PNR neben der Anschrift, den Vielfliegerinformationen und Daten zum aktuellen Flug auch gespeichert, ob die Passagierin etwa koscheres Essen haben möchte. Diese Daten klingen nicht sehr aufschlussreich und trotzdem interessieren sich Ermittlungsbehörden dafür. Denn mit Einsicht in die PNR ist die Behörde darüber informiert, wer wann wohin fliegt.&lt;/p&gt;
+
+&lt;p&gt;Die EU-Kommission hat jetzt eine Richtlinie vorgeschlagen, wonach auch in der EU diese PNR auf vier Jahre gespeichert werden soll. Bis her war es so, dass die Fluggesellschaften selbst über die Verwendung und Speicherdauer der PNRs entscheiden konnten. Falls die EU-Richtlinie umgesetzt werden sollte, wird diese Speicherdauer fest vorgeschrieben und die Daten aus dem PNR an zentraler Stelle gespeichert. „Das ist neu, dass die Daten jetzt zusammengeführt werden und auf Vorrat bei Behörden hinterlegt werden, das ist eine neue Qualität“, so Uwe Kaminski vom Bündnis NoPNR, dass sich gegen Vorratsdatenspeicherung der Fluggastdaten einsetzt.&lt;/p&gt;
+
+&lt;h2 id=&quot;vorratsdatenspeicherung-für-flugdaten&quot;&gt;Vorratsdatenspeicherung für Flugdaten&lt;/h2&gt;
+&lt;p&gt;Der Vorschlag der EU-Kommission die PNR vier Jahr zu speichern ist mit den deutschen Gesetzen zur Vorratsdatenspeicherung vergleichbar. Bei der klassischen Vorratsdatenspeicherung geht es darum, möglichst viele Metadaten, die im Bereich der Kommunikation anfallen, zu sammeln und zu verwerten. Bei der Speicherung der PNRs geht es darum, möglichst viele Daten, die beim Verreisen anfallen zu sammeln. So kann ein eventuell bestehendes Profil einer Person nach dem Big-Data-Prinzip durch die Daten aus der PNR verbessert werden. Um so mehr Daten vorhanden sind, um so wahrscheinlichere Aussagen können getroffen werden.  Das birgt laut Uwe Kaminsky Risiken, wie Erfahrungen aus den USA zeigen. Dort soll es mehrmals zu ungerechtfertigten Einreiseverboten gekommen sein. „Denn es entscheidet ein Computeralgorithmus, ob man den Zielflughafen verlassen darf. Dann muss man mühsam nachweisen, dass falsch ist, was der Algorithmus ermittelt hat.“ Denn auch wenn durch große Datensätze sehr wahrscheinliche Aussagen getroffen werden können – sicher sind sie nicht.&lt;/p&gt;
+
+&lt;p&gt;Weiterführend sei noch der Vortrag von Alexander Sander auf dem Netzpolitischer Abend in der C-Base Berlin empfohlen:&lt;/p&gt;
+
+&lt;iframe src=&quot;https://www.youtube.com/embed/v6g3xr9iND8&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+</content>
+<summary>Fluggesellschaften brauchen eine große Menge an Daten um eine Flugreise zu organisieren. Dafür legen Fluggesellschaften eine Passenger Name Record (PNR) an. Diese PNR entält alle wichtigen und weniger wichtigen Daten über die einzelnen Passagiere. So ist in der PNR neben der Anschrift, den Vielfliegerinformationen und Daten zum aktuellen Flug auch gespeichert, ob die Passagierin etwa koscheres Essen haben möchte. Diese Daten klingen nicht sehr aufschlussreich und trotzdem interessieren sich Ermittlungsbehörden dafür. Denn mit Einsicht in die PNR ist die Behörde darüber informiert, wer wann wohin fliegt.</summary>
+</entry>
+<entry>
+<title>Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche</title>
+<link href="http://localhost:4000/2015/03/14/Precobs_errechnet_Einbrueche.html" rel="alternate" type="text/html" title="Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche" />
+<published>2015-03-14T11:20:00+01:00</published>
+<updated>2015-03-14T11:20:00+01:00</updated>
+<id>http://localhost:4000/2015/03/14/Precobs_errechnet_Einbrueche</id>
+<content type="html" xml:base="http://localhost:4000/2015/03/14/Precobs_errechnet_Einbrueche.html">&lt;p&gt;In einem Bottich liegen drei bleiche, magere Menschen. Sie werden auf Drogen gehalten um ihre hellseherische Gabe zu fördern – denn sie sollen für die Polizei Washingtons Morde vorraussagen. Ihre Vorhersagen werden in Holzkugeln graviert und dann zieht Tom Cruise los um die zukünftigen Verbrecher zu fangen. Das ist in etwa das Setting von „Minority Report“, einem Film von 2002. Die drei bleichen Menschen heißen im Film „Precogs“. „Precog“ leitet sich von Precognition, also Vorausahnung her. Das  „Institut für musterbasierte Prognosetechnik“, kurz IfmP, hat sich das anscheinend zum Vorbild genommen. Das IfmP hat eine Software entwickelt, die Wohnungseinbrüche vorhersagen soll. Diese Software hat das IfmP „Precobs“ getauft. Precobs hat aber weder etwas mit den „Precogs“ aus Minority Report, noch mit Cops zu tun. Precobs steht für „Pre-Crime Observation System“.&lt;/p&gt;
+
+&lt;h2 id=&quot;der-near-repeat-effekt&quot;&gt;Der „Near-Repeat-Effekt“&lt;/h2&gt;
+&lt;p&gt;Precobs ist seit September 2014 in Bayern, genauer in München und Mittelfranken im Einsatz. Es wird dazu genutzt, Wohnungseinbrüche vorherzusagen. Die Grundlage für die Vorhersagen von Precobs sind die, in der Polizeidatenbank gespeicherten, Wohnungseinbrüche der vergangenen fünf Jahre. Precobs macht sich dabei einen Effekt namens „Near Repeat“ zunutze. „Es ist eine wissenschaftlich gesicherte Tatsache, dass Gebiete, die in den zurückliegenden Jahren häufig von Wohnungseinbrüchen betroffen waren, auch zukünftig einer verstärkten Gefahr von Einbrüchen ausgesetzt sind“, sagt Kriminaldirektor Karl Geyer vom Polizeipräsidium Mittelfranken. „Near Repeat bedeutet, dass in einem kleinräumigen Bereich, im Schnitt 500 Meter im Radius und in einem Zeitfenster von wenigen Tagen die Wahrscheinlichkeit für Folgedelikte am größten ist. Und darauf setzt Precobs auf.“&lt;/p&gt;
+
+&lt;p&gt;Diese kriminologische Theorie ist nicht neu: Bereits in den 1970er Jahren haben Sozialwissenschaftler diesen Effekt beobachten können. Der Near-Repeat-Effekt tritt dabei nur bei professionellen Täterinnen und Tätern auf. Denn diese wägen Kosten und Nutzen gegeneinander ab und bereiten ihre Einbrüche vor. Sie kundschaften ihre Ziele vorher aus, legen sich Verstecke und Fluchtrouten zurecht. Dabei suchen sie sich zumeist mehrere Häuser oder Wohungen aus, in die sie einbrechen wollen. Daraus entsteht der „Near Repeat“ Effekt. Der Algorithmus von Precobs ist auf diese Muster angewiesen. Spontane Taten lassen sich damit nicht vorhersagen, da sie keinem Muster folgen.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;{{ site.url }}/assets/polizei.jpg&quot; alt=&quot;Karl Geyer&quot; class=&quot;post_img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Deshalb werden in die Datenbank nur Einbrüche eingepflegt, die auf professionelle Täterinnen und Täter schließen lassen. Ob die Täter professionell vorgehen, macht die Kriminalpolizei am Tathergang fest. Ein eingeschlagenes Fenster spricht eher für eine Gelegenheitstat, ein mit Werkzeug herausgezogenes Schloss für geplantes Vorgehen. Auch anhand der Beute kann die Polizei Rückschlüsse auf die Täter ziehen. Wenn sperrige Gegenstände, wie der Fernseher fehlen, war wahrscheinlich ein Laie am Werk.&lt;/p&gt;
+
+&lt;h2 id=&quot;software-von-ibm-überwacht-auch-chatrooms&quot;&gt;Software von IBM überwacht auch Chatrooms&lt;/h2&gt;
+&lt;p&gt;Wie Beispiele aus anderen Ländern zeigen, ist die Software nicht auf Wohnungseinbrüche festgelegt. In Großbritannien und den USA wird vergleichbare Software auch zur Bekämpfung von Gang-Kriminalität eingesetzt. Dafür müssten allerdings mehr und auch personenbezogene Daten verwendet werden. Dies widerspricht allerdings deutschen Datenschutzgesetzen. IBM macht für seine Plattform zur Verbrechensvorhersage damit Werbung, dass persönliche Daten bequem und automatisch eingebunden werden können:&lt;/p&gt;
+
+&lt;p&gt;Diese Lösungen benutzen Vorhersagetechnologien um den Datenberg zu analysieren, den die meisten Bezirke schon sammeln. Haftbefehle, Verhaftungen, Daten von Gangs, Unfallberichte usw. Und IBM SPSS Software geht noch weiter: Sie analysiert auch Daten aus nicht traditionellen Quellen wie Unterhaltungen in Chat-Rooms, Emails, Blogs, Wettervorhersagen, lokalen Veranstaltungskalendern und anderen, sich ständig weiterentwickelnden Datenquellen.
+Precobs hat zur Zeit noch ein wesentlich eingeschränkteres Funktiosspektrum. Das liegt auch an deutschen Datenschutzgesetzen, welche es verbieten, personenbezogene Daten in einer Weise zu sammeln und zu verarbeiten, wie es für die Lösung von IBM nötig wäre. Für den Betrieb von Precobs wird lediglich der genaue Tatort, die Tatzeit sowie Beute und Begehungsweise des Einbruchs gespeichert und ausgewertet. Auch der bayerische Datenschutzbeauftragte, Dr. Wolfgang Petri, hat grünes Licht gegeben: „Das derzeit verwendete Analysesystem ist in der aktuellen Ausgestaltung datenschutzrechtlich nicht zu beanstanden. Abgesehen von Angaben zum Tatort verwendet das System keine personenbezogenen Daten, um Tatvorhersagen zu treffen.“&lt;/p&gt;
+
+&lt;h2 id=&quot;permanente-rasterfahndung&quot;&gt;Permanente Rasterfahndung&lt;/h2&gt;
+&lt;p&gt;Es gibt auch in Deutschland spezielle Datenbanken, welche die Datensätze verschiedener Behörden zusammenführen: Die Anti-Terror-Datei und die Rechtsextremismus-Datei. Die Legitimität dieser Dateien ist inzwischen vom Bundesverfassungsgericht bestätigt. Diese Dateien wären eine gute Datengrundlage für die personenbezogene Vorhersage von Straftaten. Das zugrunde liegende Konzept heißt Rasterfahndung und wurde in den 1970er Jahren als Ermittlungsstrategie gegen die Rote Armee Fraktion entwickelt. Dabei wurden bereits vorhandene Datenbanken nach Kriterien durchsucht, von welchen man annahm, dass sie auf Terroristen zutreffen würden. Problematisch ist hierbei, dass gegen jede Person ermittelt wird, die in den Datenbanken ist. „Wenn bei Personendaten aus mehreren Quellen geguckt wird: Welche Übereinstimmung gibt es da? Wer hat die gleichen Kontaktpersonen? Was sind sonst von diesem Bankkonto schoneinmal für Zahlungen getätigt worden? Das kommt im Prinzip einer permanenten Rasterfahndung gleich“, sagt Matthias Monroy, Wissenschaftsjournalist und Mitarbeiter der Bundestagsabgeordneten Andrej Hunko. Wie sich in anderen Ländern, wie den USA oder in Großbritannien gezeigt hat, sind Ermittlungsbehörden bemüht auch diese Datenquellen legal in ihre Arbeit einfließen lassen zu können. „Ich glaube den Verlautbarungen der Polizei,dass man davon noch ein bisschen entfernt ist, aber die Frage ist: Was ist in zehn Jahren?“, so Monroy weiter.&lt;/p&gt;
+
+&lt;h2 id=&quot;potentielle-täter-aus-der-anonymität-reißen&quot;&gt;Potentielle Täter aus der Anonymität reißen&lt;/h2&gt;
+&lt;p&gt;Thomas Schweer vom IfmP sagte in einem Interview, dass eine Prognose nicht falsch sei, weil die Menschen festgenommen werden, bevor sie eine Tat begehen. Was in Minority Report gängig ist, ist nach deutschem Recht allerdings undenkbar: Nach einer juristischen Faustformel muss der Täter oder die Täterin die Schwelle zum „Jetzt-gehts-los“ überschreiten, bevor das Handeln strafbar wird. Es ist also nicht möglich, eine zukünftige Einbrecherin im Baumarkt zu verhaften, wenn sie sich gerade die Leiter kauft mit der sie über die Mauer der Villa steigen will. Geyer weißt darauf hin, dass Precobs gar nicht dazu gedacht ist, Täter vor der noch zu begehenden Tat festzunehmen, sondern zukünftige Tatorte zu erkennen, „um dann potentielle Täter vorher zu kontrollieren und sie aus der Anonymität zu reißen. So können wir potentielle Opfer vor einem Wohnungseinbruch schützen.“&lt;/p&gt;
+
+&lt;p&gt;Bei der präventiven Kontrolle in den von Precobs als gefährdet angegebenen Gebieten zeigt sich eine der Schattenseiten der Fahndung nach dem Wahrscheinlichkeitsprinzip. Matthias Monroy befürchtet, dass bei den verstärkten Kontrollen in den angegebenen Gebieten manche Bevölkerungsgruppen stärker kontrolliert werden als andere. Diese Praxis nennt sich auch „Racial Profiling“ und ist in Deutschland eigentlich nicht gestattet. Monroy meint „dass die stereotypen Vorannahmen von Polizistinnen und Polizisten zementiert werden. Das können auch rassistische Stereotypen sein. Wenn eine Software sagt, dass ein Einbruch bevorsteht, werden die Leute kontrolliert, die den Beamtinnen und Beamten als riskant erscheinen.“&lt;/p&gt;
+
+&lt;iframe src=&quot;https://www.youtube.com/embed/J1B1LHF4g6w&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot; class=&quot;post_vid&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Tatsächlich legt die Nürnberger Polizei einen Schwerpunkt auf Banden aus Südosteuropa. Diese Erkenntnis zieht Karl Geyer aus den bisher aufgeklärten Fällen. Er betont aber auch, dass nicht alle Wohnungseinbrüche auf südosteuropäische Banden zurückzuführen sind. Bei einer Aufklärungsquote von nur 20 bis 25 Prozent gäbe es eine große Dunkelziffer. Bei Wohnungseinbrüchen spielt laut Geyer auch die Beschaffungskriminalität eine große Rolle.&lt;/p&gt;
+
+&lt;h2 id=&quot;wirksamkeit-noch-umstritten&quot;&gt;Wirksamkeit noch umstritten&lt;/h2&gt;
+&lt;p&gt;Die tatsächliche Wirksamkeit von Precobs lässt sich noch nicht beurteilen. Auch eine Studie des LKA in Nordrhein-Westfalen kommt zu diesem Schluss: die Wirksamkeit wird zwar von vielen Unternehmen unterstellt, dies wird aber nicht korrekt belegt. Die Zeiträume, die von den Unternehmen herangezogen werden, sind so gelegt, dass sie ein möglichst positives Licht auf ihre Produkte werfen. Werden längere Zeiträume betrachtet, steigen die Fallzahlen manchmal sogar. Das liegt einfach daran, dass Precobs nunmal keine Wunderwaffe a la Minority Report ist, sondern einfach ein Programm, dass eigentlich nicht viel anders macht als das, was ein erfahrener Polizist unter Intuition und Erfahrung versteht. Nur eben auf statistischer Basis.&lt;/p&gt;
+</content>
+<summary>In einem Bottich liegen drei bleiche, magere Menschen. Sie werden auf Drogen gehalten um ihre hellseherische Gabe zu fördern – denn sie sollen für die Polizei Washingtons Morde vorraussagen. Ihre Vorhersagen werden in Holzkugeln graviert und dann zieht Tom Cruise los um die zukünftigen Verbrecher zu fangen. Das ist in etwa das Setting von „Minority Report“, einem Film von 2002. Die drei bleichen Menschen heißen im Film „Precogs“. „Precog“ leitet sich von Precognition, also Vorausahnung her. Das  „Institut für musterbasierte Prognosetechnik“, kurz IfmP, hat sich das anscheinend zum Vorbild genommen. Das IfmP hat eine Software entwickelt, die Wohnungseinbrüche vorhersagen soll. Diese Software hat das IfmP „Precobs“ getauft. Precobs hat aber weder etwas mit den „Precogs“ aus Minority Report, noch mit Cops zu tun. Precobs steht für „Pre-Crime Observation System“.</summary>
+</entry>
+</feed>

@@ -1,0 +1,18 @@
+.html {
+  font-family: "Courier New";
+}
+
+.line{
+  border-bottom: 1px dashed;
+}
+.text{
+  width: 50vw;
+  float: left;
+}
+.img{
+  width: 35vw;
+  float: right;
+}
+.center{
+  text-align: center;
+}
