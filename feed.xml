@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 <generator uri="http://jekyllrb.com" version="3.4.3">Jekyll</generator>
-<link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" />
-<link href="http://localhost:4000/" rel="alternate" type="text/html" />
-<updated>2017-04-11T15:13:53+02:00</updated>
-<id>http://localhost:4000/</id>
+<link href="/feed.xml" rel="self" type="application/atom+xml" />
+<link href="/" rel="alternate" type="text/html" />
+<updated>2017-04-12T14:24:14+02:00</updated>
+<id>/</id>
 <entry>
 <title>Sentimentanalyse mit SentiWS in R</title>
-<link href="http://localhost:4000/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R.html" rel="alternate" type="text/html" title="Sentimentanalyse mit SentiWS in R" />
+<link href="/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R.html" rel="alternate" type="text/html" title="Sentimentanalyse mit SentiWS in R" />
 <published>2017-04-10T12:20:00+02:00</published>
 <updated>2017-04-10T12:20:00+02:00</updated>
-<id>http://localhost:4000/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R</id>
-<content type="html" xml:base="http://localhost:4000/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R.html">&lt;p&gt;SentiWS ist der einzige deutsche Sentimentwortschatz unter freier Lizenz. Leider ist er für eine automatisierte Auswertung nicht optimal strukturiert. Ein einfaches R-Skript behebt das. Auch die Sentimentanalyse selbst ist kein Hexenwerk.&lt;/p&gt;
+<id>/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R</id>
+<content type="html" xml:base="/2017/04/10/Sentimentanalyse_mit_SentiWS_in_R.html">&lt;p&gt;SentiWS ist der einzige deutsche Sentimentwortschatz unter freier Lizenz. Leider ist er für eine automatisierte Auswertung nicht optimal strukturiert. Ein einfaches R-Skript behebt das. Auch die Sentimentanalyse selbst ist kein Hexenwerk.&lt;/p&gt;
 
 &lt;h2 id=&quot;sortieren-von-sentiws&quot;&gt;Sortieren von SentiWS&lt;/h2&gt;
 
@@ -175,11 +175,11 @@ liste &amp;lt;- NULL&lt;/p&gt;
 </entry>
 <entry>
 <title>Cambridge Analytica und die virale Bombe</title>
-<link href="http://localhost:4000/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe.html" rel="alternate" type="text/html" title="Cambridge Analytica und die virale Bombe" />
+<link href="/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe.html" rel="alternate" type="text/html" title="Cambridge Analytica und die virale Bombe" />
 <published>2016-12-06T11:20:00+01:00</published>
 <updated>2016-12-06T11:20:00+01:00</updated>
-<id>http://localhost:4000/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe</id>
-<content type="html" xml:base="http://localhost:4000/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe.html">&lt;p&gt;Wer ist schuld an Trump? Zuerst waren es die weißen Männer, die ihn gewählt haben. Dann die Medien, die ihn unterschätzt haben. Dann war es die globale Linke, die zugelassen hat, dass die weißen Männer Trump wählen. Dann Facebook, auf dem Fake-News von und für weiße Männer geteilt wurden. Jetzt sind es die Datenanalysten von Cambridge Analytica.
+<id>/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe</id>
+<content type="html" xml:base="/2016/12/06/Cambridge_Analytica_und_die_virale_Bombe.html">&lt;p&gt;Wer ist schuld an Trump? Zuerst waren es die weißen Männer, die ihn gewählt haben. Dann die Medien, die ihn unterschätzt haben. Dann war es die globale Linke, die zugelassen hat, dass die weißen Männer Trump wählen. Dann Facebook, auf dem Fake-News von und für weiße Männer geteilt wurden. Jetzt sind es die Datenanalysten von Cambridge Analytica.
 Cambridge Analytica bezieht personenbezogene Daten aus verschiedenen Quellen, wie den öffentlichen Facebookprofilen und frei verkäuflichen Konsumentendaten. Diese Daten werden arrangiert und nach dem Ocean-Modell ausgewertet, einer Technik aus der Psychologie mithilfe derer Persönlichkeitstypen dargestellt werden können. Die Firma verspricht so eine zielgenaue Ansprache von Wählerinnen und Wählern, ganz nach ihrem jeweiligen Persönlichkeitsprofil.&lt;/p&gt;
 
 &lt;h2 id=&quot;cambridge-analytica-sind-keine-hexer&quot;&gt;Cambridge Analytica sind keine Hexer&lt;/h2&gt;
@@ -202,11 +202,11 @@ Die neuen Technologien um Zielgruppen zu erschließen und sie anzusprechen werde
 </entry>
 <entry>
 <title>Gaming?! – Kostet extra!</title>
-<link href="http://localhost:4000/2015/11/06/Gaming-_Kostet_Extra.html" rel="alternate" type="text/html" title="Gaming?! – Kostet extra!" />
+<link href="/2015/11/06/Gaming-_Kostet_Extra.html" rel="alternate" type="text/html" title="Gaming?! – Kostet extra!" />
 <published>2015-11-06T11:20:00+01:00</published>
 <updated>2015-11-06T11:20:00+01:00</updated>
-<id>http://localhost:4000/2015/11/06/Gaming?_Kostet_Extra</id>
-<content type="html" xml:base="http://localhost:4000/2015/11/06/Gaming-_Kostet_Extra.html">&lt;p&gt;Alexander Sander arbeitet als Geschäftsführer beim Digitale Gesellschaft e.V., der sich für Grundrechte und Verbraucherschutz im Netz einsetzt. Zuvor war er drei Jahre in Brüssel Mitarbeiter eines Mitglieds des Europäischen Parlaments. Er ist Gründer von NoPNR!, einer Kampagne gegen die Vorratsdatenspeicherung von Reisedaten, und Observer bei EDRi.&lt;/p&gt;
+<id>/2015/11/06/Gaming?_Kostet_Extra</id>
+<content type="html" xml:base="/2015/11/06/Gaming-_Kostet_Extra.html">&lt;p&gt;Alexander Sander arbeitet als Geschäftsführer beim Digitale Gesellschaft e.V., der sich für Grundrechte und Verbraucherschutz im Netz einsetzt. Zuvor war er drei Jahre in Brüssel Mitarbeiter eines Mitglieds des Europäischen Parlaments. Er ist Gründer von NoPNR!, einer Kampagne gegen die Vorratsdatenspeicherung von Reisedaten, und Observer bei EDRi.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Marco Lehner:&lt;/strong&gt; Letzte Woche wurde im Europaparlament das Gesetz zur Netzneutralität verabschiedet. Es wissen aber noch nicht alle, was Netzneutralität eigentlich genau ist. Kannst du diesen Begriff kurz umreißen?&lt;/p&gt;
 
@@ -243,11 +243,11 @@ Momentan ist es aber noch zu früh, die Bürgerbeteiligung zu intensivieren, wir
 </entry>
 <entry>
 <title>Fast Slow Journalism</title>
-<link href="http://localhost:4000/2015/10/29/Fast_Slow_Journalism.html" rel="alternate" type="text/html" title="Fast Slow Journalism" />
+<link href="/2015/10/29/Fast_Slow_Journalism.html" rel="alternate" type="text/html" title="Fast Slow Journalism" />
 <published>2015-10-29T11:20:00+01:00</published>
 <updated>2015-10-29T11:20:00+01:00</updated>
-<id>http://localhost:4000/2015/10/29/Fast_Slow_Journalism</id>
-<content type="html" xml:base="http://localhost:4000/2015/10/29/Fast_Slow_Journalism.html">&lt;p&gt;Während Rob Orchard auf der Bühne steht und über Slow Journalism referiert, sitze ich im Publikum und schreibe an dem Artikel über Slow Journalism. Ich komme mir dabei zusehends blöder vor, erfülle ich doch im Moment alles, was Orchard an den neueren Entwicklungen des (Online-)Journalismus angreift:&lt;/p&gt;
+<id>/2015/10/29/Fast_Slow_Journalism</id>
+<content type="html" xml:base="/2015/10/29/Fast_Slow_Journalism.html">&lt;p&gt;Während Rob Orchard auf der Bühne steht und über Slow Journalism referiert, sitze ich im Publikum und schreibe an dem Artikel über Slow Journalism. Ich komme mir dabei zusehends blöder vor, erfülle ich doch im Moment alles, was Orchard an den neueren Entwicklungen des (Online-)Journalismus angreift:&lt;/p&gt;
 
 &lt;p&gt;„Die klassischen Online-Medien sind immer im Wettlauf mit Twitter“, sagt er und schon fühle ich mich ertappt. Ich wechsle auf Twitter und sehe, dass alles was in diesem Artikel stehen wird bereits auf Twitter nachzulesen ist. Es ist wie mit dem Hasen und dem Igel. Nur weiß ich nicht, wer hier Hase und wer Igel ist.&lt;/p&gt;
 
@@ -264,11 +264,11 @@ Momentan ist es aber noch zu früh, die Bürgerbeteiligung zu intensivieren, wir
 </entry>
 <entry>
 <title>Der Kampf um die Standards der industriellen Revolution</title>
-<link href="http://localhost:4000/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution.html" rel="alternate" type="text/html" title="Der Kampf um die Standards der industriellen Revolution" />
+<link href="/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution.html" rel="alternate" type="text/html" title="Der Kampf um die Standards der industriellen Revolution" />
 <published>2015-10-28T11:20:00+01:00</published>
 <updated>2015-10-28T11:20:00+01:00</updated>
-<id>http://localhost:4000/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution</id>
-<content type="html" xml:base="http://localhost:4000/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution.html">&lt;p&gt;Die älteste Initiative ist Industrie 4.0 aus Deutschland – sie wurde 2011 auf der Hannover Messe vorgestellt. Inzwischen hat sich das Konzept zur Hightech-Strategie der Bundesregierung weiterentwickelt, um deutsche Firmen, allen voran den Mittelstand, fit für die vernetzte Produktion der Zukunft zu machen. Die Branchenverbände der Maschinen- und Anlagenbauer (VDMA), der Elektroindustrie (ZVEI) und der Telekommunikations- und Informatikwirtschaft (Bitkom) sind an der Umsetzung der Strategie mit beteiligt. Industrie 4.0 und das französische Pendant Industrie du Futur beraten zur Zeit eine Fusion.
+<id>/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution</id>
+<content type="html" xml:base="/2015/10/28/Der_Kampf_um_die_Standards_der_industriellen_Revolution.html">&lt;p&gt;Die älteste Initiative ist Industrie 4.0 aus Deutschland – sie wurde 2011 auf der Hannover Messe vorgestellt. Inzwischen hat sich das Konzept zur Hightech-Strategie der Bundesregierung weiterentwickelt, um deutsche Firmen, allen voran den Mittelstand, fit für die vernetzte Produktion der Zukunft zu machen. Die Branchenverbände der Maschinen- und Anlagenbauer (VDMA), der Elektroindustrie (ZVEI) und der Telekommunikations- und Informatikwirtschaft (Bitkom) sind an der Umsetzung der Strategie mit beteiligt. Industrie 4.0 und das französische Pendant Industrie du Futur beraten zur Zeit eine Fusion.
 Das Industrial Internet Consortium (IIC) dagegen hat sich 2014 direkt aus einem Zusammenschluss, größtenteils amerikanischer, Firmen gebildet. Doch es kommen immer mehr internationale Firmen hinzu: Inzwischen sind auch Siemens, Fujitsu oder Bosch Mitglied im IIC. Richard Soley, der Botschafter des IIC wurde auf dem diesjährigen Maschinenbaugipfel in Berlin nicht müde zu betonen, dass das IIC keine amerikanische Interessenvertretung sei. Auf der LinkedIn-Seite des IIC steht trotzdem: „Das IIC wird die Entstehung des Industrial Internets, das grundlegend für die Konkurrenzfähigkeit amerikanischer Firmen in industriellen Schlüsselsektoren ist, ermöglichen und beschleunigen“. Das IIC legt dabei seinen Schwerpunkt weniger auf die Vernetzung innerhalb der Fabrik, sondern auf die Vernetzung der gesamten Wertschöpfungskette.
 Auch in Japan wurde im Juni 2015 ein Pendant zur Industrie 4.0 Plattform der Bundesregierung gegründet: Die Industrial Value Chain Initiative (IVI). Dieses findet strukturell einen Mittelweg zwischen den beiden länger existierenden Plattformen. Wie das IIC wurde es von Unternehmen gegründet, auch hier vor allem japanische. In der Strategie ähneln sie den deutschen: „Wir wollen eine Struktur etablieren, die es uns ermöglicht, selbst kleine und mittelständische Unternehmen über das Internet firmen- und branchenübergreifend zu verbinden“, wird IVI Chef Yasuyuki Nishioka auf nikkei.com zitiert.&lt;/p&gt;
 
@@ -284,11 +284,11 @@ Auch in Japan wurde im Juni 2015 ein Pendant zur Industrie 4.0 Plattform der Bun
 </entry>
 <entry>
 <title>Roboterjournalismus - Journalismus aus der Dose</title>
-<link href="http://localhost:4000/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose.html" rel="alternate" type="text/html" title="Roboterjournalismus - Journalismus aus der Dose" />
+<link href="/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose.html" rel="alternate" type="text/html" title="Roboterjournalismus - Journalismus aus der Dose" />
 <published>2015-10-19T12:20:00+02:00</published>
 <updated>2015-10-19T12:20:00+02:00</updated>
-<id>http://localhost:4000/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose</id>
-<content type="html" xml:base="http://localhost:4000/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose.html">&lt;p&gt;Während der letzten Minuten eines Fußballspiels gelangen die Spieler an ihre physische Grenze. Die Fans haben sich heiser geschrien und auch die Sportjournalisten haben Stress: Es bleibt nur noch eine Stunde, um den Artikel in die morgige Ausgabe zu bringen. Bald hat sich das erledigt. Das Fußballportal FussiFreunde arbeitet über die Sommerpause an einem Programm, um die Spielberichte von einem Roboter schreiben zu lassen. Dabei sitzt natürlich kein Roboter an einer Schreibmaschine, um über das Spiel zu berichten. „Aber ob das im Wortsinne richtig ist, ist eher eine Spitzfindigkeit“, sagt Johannes Sommer, Geschäftsführer von Retresco, der Fussifreunde bei der Umsetzung ihrer automatisch geschriebenen Texte unterstützt. „Es stellt plakativ dar, was passiert: Ein Programm generiert einen Text.“&lt;/p&gt;
+<id>/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose</id>
+<content type="html" xml:base="/2015/10/19/Roboterjournalismus_Artikel_aus_der_Dose.html">&lt;p&gt;Während der letzten Minuten eines Fußballspiels gelangen die Spieler an ihre physische Grenze. Die Fans haben sich heiser geschrien und auch die Sportjournalisten haben Stress: Es bleibt nur noch eine Stunde, um den Artikel in die morgige Ausgabe zu bringen. Bald hat sich das erledigt. Das Fußballportal FussiFreunde arbeitet über die Sommerpause an einem Programm, um die Spielberichte von einem Roboter schreiben zu lassen. Dabei sitzt natürlich kein Roboter an einer Schreibmaschine, um über das Spiel zu berichten. „Aber ob das im Wortsinne richtig ist, ist eher eine Spitzfindigkeit“, sagt Johannes Sommer, Geschäftsführer von Retresco, der Fussifreunde bei der Umsetzung ihrer automatisch geschriebenen Texte unterstützt. „Es stellt plakativ dar, was passiert: Ein Programm generiert einen Text.“&lt;/p&gt;
 
 &lt;h2 id=&quot;automatisch-geschrieben-von-rtr-text-engine&quot;&gt;Automatisch geschrieben von rtr text engine&lt;/h2&gt;
 
@@ -310,11 +310,11 @@ Dirk Becker sieht es vor allem als Arbeitserleichterung an, Texte automatisch ge
 </entry>
 <entry>
 <title>Vorratsdatenspeicherung - The Neverending Story</title>
-<link href="http://localhost:4000/2015/10/16/Vorratsdatenspeicherung_the_neverending_story.html" rel="alternate" type="text/html" title="Vorratsdatenspeicherung - The Neverending Story" />
+<link href="/2015/10/16/Vorratsdatenspeicherung_the_neverending_story.html" rel="alternate" type="text/html" title="Vorratsdatenspeicherung - The Neverending Story" />
 <published>2015-10-16T12:20:00+02:00</published>
 <updated>2015-10-16T12:20:00+02:00</updated>
-<id>http://localhost:4000/2015/10/16/Vorratsdatenspeicherung_the_neverending_story</id>
-<content type="html" xml:base="http://localhost:4000/2015/10/16/Vorratsdatenspeicherung_the_neverending_story.html">&lt;p&gt;Das neue Gesetz zur Vorratsdatenspeicherung hat heute den Bundestag passiert. Obwohl das Gesetz klar mit 404 Stimmen angenommen wurde, zeigt sich im Abstimmungsverhalten auch, wie kontrovers das Gesetz aufgenommen wird. Mindestens 21 Abgeordnete der großen Koalition haben ihre Fraktionsdisziplin verletzt und gegen das Gesetz gestimmt.&lt;/p&gt;
+<id>/2015/10/16/Vorratsdatenspeicherung_the_neverending_story</id>
+<content type="html" xml:base="/2015/10/16/Vorratsdatenspeicherung_the_neverending_story.html">&lt;p&gt;Das neue Gesetz zur Vorratsdatenspeicherung hat heute den Bundestag passiert. Obwohl das Gesetz klar mit 404 Stimmen angenommen wurde, zeigt sich im Abstimmungsverhalten auch, wie kontrovers das Gesetz aufgenommen wird. Mindestens 21 Abgeordnete der großen Koalition haben ihre Fraktionsdisziplin verletzt und gegen das Gesetz gestimmt.&lt;/p&gt;
 
 &lt;p&gt;Die Anbieter von Kommunikationsdiensten haben ab jetzt 18 Monate Zeit um die Infrastruktur zu erstellen. Der Verband der deutschen Internetwirtschaft Eco beziffert die Kosten auf etwa 600 Millionen Euro. Die Vorratsdatenspeicherung ist laut Eco eine „netzpolitische Fehlentscheidung, die nur Verlierer kennt.&lt;/p&gt;
 
@@ -335,11 +335,11 @@ Dirk Becker sieht es vor allem als Arbeitserleichterung an, Texte automatisch ge
 </entry>
 <entry>
 <title>Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche</title>
-<link href="http://localhost:4000/2015/05/27/Es_gibt_kein_sicheres_Internet.html" rel="alternate" type="text/html" title="Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche" />
+<link href="/2015/05/27/Es_gibt_kein_sicheres_Internet.html" rel="alternate" type="text/html" title="Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche" />
 <published>2015-05-27T12:20:00+02:00</published>
 <updated>2015-05-27T12:20:00+02:00</updated>
-<id>http://localhost:4000/2015/05/27/Es_gibt_kein_sicheres_Internet</id>
-<content type="html" xml:base="http://localhost:4000/2015/05/27/Es_gibt_kein_sicheres_Internet.html">&lt;p&gt;„Das Internet ist ein Informationssystem, dass über viele Jahre und Jahrzehnte gewachsen ist, ein komplexes Ökosystem, dass von vielen Menschen gemacht wurde. Es ist organisch gewachsen, folglich hat es Probleme – gerade was die Sicherheit angeht. Fehler auf jeder Ebene können zu Angriffen führen“, so Michael Backes, Professor an der Universität des Saarlands. „Wenn ich eine Ebene brechen kann sind mir die anderen egal. Die bestehenden Systeme wurden auch nicht entworfen, um a priori sicher zu sein. Sie wurden entworfen um nützlich zu sein. Sicherheit war kein Designkriterium des Internets.“&lt;/p&gt;
+<id>/2015/05/27/Es_gibt_kein_sicheres_Internet</id>
+<content type="html" xml:base="/2015/05/27/Es_gibt_kein_sicheres_Internet.html">&lt;p&gt;„Das Internet ist ein Informationssystem, dass über viele Jahre und Jahrzehnte gewachsen ist, ein komplexes Ökosystem, dass von vielen Menschen gemacht wurde. Es ist organisch gewachsen, folglich hat es Probleme – gerade was die Sicherheit angeht. Fehler auf jeder Ebene können zu Angriffen führen“, so Michael Backes, Professor an der Universität des Saarlands. „Wenn ich eine Ebene brechen kann sind mir die anderen egal. Die bestehenden Systeme wurden auch nicht entworfen, um a priori sicher zu sein. Sie wurden entworfen um nützlich zu sein. Sicherheit war kein Designkriterium des Internets.“&lt;/p&gt;
 
 &lt;p&gt;Der Weg aller Soft- und Hardware ist eine lange Kette, die in dem Rechner endet, der jetzt vor Ihnen auf dem Tisch steht. Die Kette beginnt in verschiedenen Firmen, welche die Einzelteile des Rechners produzieren, diese versenden und zusammensetzen. Auch durch schlechte Sicherheitstechnologien, online und offline, werden Angriffe ermöglicht.&lt;/p&gt;
 
@@ -367,11 +367,11 @@ Dirk Becker sieht es vor allem als Arbeitserleichterung an, Texte automatisch ge
 </entry>
 <entry>
 <title>Was isst du auf dem Weg nach Malle?</title>
-<link href="http://localhost:4000/2015/05/05/No_PNR.html" rel="alternate" type="text/html" title="Was isst du auf dem Weg nach Malle?" />
+<link href="/2015/05/05/No_PNR.html" rel="alternate" type="text/html" title="Was isst du auf dem Weg nach Malle?" />
 <published>2015-05-05T12:20:00+02:00</published>
 <updated>2015-05-05T12:20:00+02:00</updated>
-<id>http://localhost:4000/2015/05/05/No_PNR</id>
-<content type="html" xml:base="http://localhost:4000/2015/05/05/No_PNR.html">&lt;p&gt;Fluggesellschaften brauchen eine große Menge an Daten um eine Flugreise zu organisieren. Dafür legen Fluggesellschaften eine Passenger Name Record (PNR) an. Diese PNR entält alle wichtigen und weniger wichtigen Daten über die einzelnen Passagiere. So ist in der PNR neben der Anschrift, den Vielfliegerinformationen und Daten zum aktuellen Flug auch gespeichert, ob die Passagierin etwa koscheres Essen haben möchte. Diese Daten klingen nicht sehr aufschlussreich und trotzdem interessieren sich Ermittlungsbehörden dafür. Denn mit Einsicht in die PNR ist die Behörde darüber informiert, wer wann wohin fliegt.&lt;/p&gt;
+<id>/2015/05/05/No_PNR</id>
+<content type="html" xml:base="/2015/05/05/No_PNR.html">&lt;p&gt;Fluggesellschaften brauchen eine große Menge an Daten um eine Flugreise zu organisieren. Dafür legen Fluggesellschaften eine Passenger Name Record (PNR) an. Diese PNR entält alle wichtigen und weniger wichtigen Daten über die einzelnen Passagiere. So ist in der PNR neben der Anschrift, den Vielfliegerinformationen und Daten zum aktuellen Flug auch gespeichert, ob die Passagierin etwa koscheres Essen haben möchte. Diese Daten klingen nicht sehr aufschlussreich und trotzdem interessieren sich Ermittlungsbehörden dafür. Denn mit Einsicht in die PNR ist die Behörde darüber informiert, wer wann wohin fliegt.&lt;/p&gt;
 
 &lt;p&gt;Die EU-Kommission hat jetzt eine Richtlinie vorgeschlagen, wonach auch in der EU diese PNR auf vier Jahre gespeichert werden soll. Bis her war es so, dass die Fluggesellschaften selbst über die Verwendung und Speicherdauer der PNRs entscheiden konnten. Falls die EU-Richtlinie umgesetzt werden sollte, wird diese Speicherdauer fest vorgeschrieben und die Daten aus dem PNR an zentraler Stelle gespeichert. „Das ist neu, dass die Daten jetzt zusammengeführt werden und auf Vorrat bei Behörden hinterlegt werden, das ist eine neue Qualität“, so Uwe Kaminski vom Bündnis NoPNR, dass sich gegen Vorratsdatenspeicherung der Fluggastdaten einsetzt.&lt;/p&gt;
 
@@ -386,11 +386,11 @@ Dirk Becker sieht es vor allem als Arbeitserleichterung an, Texte automatisch ge
 </entry>
 <entry>
 <title>Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche</title>
-<link href="http://localhost:4000/2015/03/14/Precobs_errechnet_Einbrueche.html" rel="alternate" type="text/html" title="Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche" />
+<link href="/2015/03/14/Precobs_errechnet_Einbrueche.html" rel="alternate" type="text/html" title="Ich sehe was, was du nicht siehst – Precobs errechnet Einbrüche" />
 <published>2015-03-14T11:20:00+01:00</published>
 <updated>2015-03-14T11:20:00+01:00</updated>
-<id>http://localhost:4000/2015/03/14/Precobs_errechnet_Einbrueche</id>
-<content type="html" xml:base="http://localhost:4000/2015/03/14/Precobs_errechnet_Einbrueche.html">&lt;p&gt;In einem Bottich liegen drei bleiche, magere Menschen. Sie werden auf Drogen gehalten um ihre hellseherische Gabe zu fördern – denn sie sollen für die Polizei Washingtons Morde vorraussagen. Ihre Vorhersagen werden in Holzkugeln graviert und dann zieht Tom Cruise los um die zukünftigen Verbrecher zu fangen. Das ist in etwa das Setting von „Minority Report“, einem Film von 2002. Die drei bleichen Menschen heißen im Film „Precogs“. „Precog“ leitet sich von Precognition, also Vorausahnung her. Das  „Institut für musterbasierte Prognosetechnik“, kurz IfmP, hat sich das anscheinend zum Vorbild genommen. Das IfmP hat eine Software entwickelt, die Wohnungseinbrüche vorhersagen soll. Diese Software hat das IfmP „Precobs“ getauft. Precobs hat aber weder etwas mit den „Precogs“ aus Minority Report, noch mit Cops zu tun. Precobs steht für „Pre-Crime Observation System“.&lt;/p&gt;
+<id>/2015/03/14/Precobs_errechnet_Einbrueche</id>
+<content type="html" xml:base="/2015/03/14/Precobs_errechnet_Einbrueche.html">&lt;p&gt;In einem Bottich liegen drei bleiche, magere Menschen. Sie werden auf Drogen gehalten um ihre hellseherische Gabe zu fördern – denn sie sollen für die Polizei Washingtons Morde vorraussagen. Ihre Vorhersagen werden in Holzkugeln graviert und dann zieht Tom Cruise los um die zukünftigen Verbrecher zu fangen. Das ist in etwa das Setting von „Minority Report“, einem Film von 2002. Die drei bleichen Menschen heißen im Film „Precogs“. „Precog“ leitet sich von Precognition, also Vorausahnung her. Das  „Institut für musterbasierte Prognosetechnik“, kurz IfmP, hat sich das anscheinend zum Vorbild genommen. Das IfmP hat eine Software entwickelt, die Wohnungseinbrüche vorhersagen soll. Diese Software hat das IfmP „Precobs“ getauft. Precobs hat aber weder etwas mit den „Precogs“ aus Minority Report, noch mit Cops zu tun. Precobs steht für „Pre-Crime Observation System“.&lt;/p&gt;
 
 &lt;h2 id=&quot;der-near-repeat-effekt&quot;&gt;Der „Near-Repeat-Effekt“&lt;/h2&gt;
 &lt;p&gt;Precobs ist seit September 2014 in Bayern, genauer in München und Mittelfranken im Einsatz. Es wird dazu genutzt, Wohnungseinbrüche vorherzusagen. Die Grundlage für die Vorhersagen von Precobs sind die, in der Polizeidatenbank gespeicherten, Wohnungseinbrüche der vergangenen fünf Jahre. Precobs macht sich dabei einen Effekt namens „Near Repeat“ zunutze. „Es ist eine wissenschaftlich gesicherte Tatsache, dass Gebiete, die in den zurückliegenden Jahren häufig von Wohnungseinbrüchen betroffen waren, auch zukünftig einer verstärkten Gefahr von Einbrüchen ausgesetzt sind“, sagt Kriminaldirektor Karl Geyer vom Polizeipräsidium Mittelfranken. „Near Repeat bedeutet, dass in einem kleinräumigen Bereich, im Schnitt 500 Meter im Radius und in einem Zeitfenster von wenigen Tagen die Wahrscheinlichkeit für Folgedelikte am größten ist. Und darauf setzt Precobs auf.“&lt;/p&gt;
