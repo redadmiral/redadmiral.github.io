@@ -84,6 +84,8 @@ GEM
       pathutil (~> 0.9)
       rouge (~> 1.7)
       safe_yaml (~> 1.0)
+    jekyll-auto-image (1.1.3)
+      jekyll
     jekyll-avatar (0.4.2)
       jekyll (~> 3.0)
     jekyll-coffeescript (1.0.1)
@@ -203,6 +205,7 @@ PLATFORMS
 
 DEPENDENCIES
   github-pages
+  jekyll-auto-image
   jekyll-feed
   jekyll-minimagick
   jekyll-seo-tag
