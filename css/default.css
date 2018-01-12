@@ -497,6 +497,7 @@ template {
 .nav {
   list-style-type: none;
   text-align: left;
+  padding: auto;
 }
 
 .nav > li {
@@ -527,7 +528,7 @@ template {
   margin-top: 10px;
   margin-left: 10px;
   display: flex;
-  flex-direction: column;
+	flex-direction: column;
   text-align: center;
 }
 
@@ -537,7 +538,7 @@ template {
 
 .profession {
   font-size: 2.75vw;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .pgp {
@@ -554,7 +555,6 @@ template {
     margin: 0 auto;
     display: block;
 }
-
 /*=========================  SYNTAX-HIGHLIGHTING  ============================*/
 
 /*===================================  R  ====================================*/
