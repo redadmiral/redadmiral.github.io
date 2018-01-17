@@ -485,6 +485,10 @@ template {
 
 /*==========================  SIDEBAR/HEADER  ================================*/
 
+iframe {
+  border-style: none;
+}
+
 .img-self {
   width: 80px;
   height: 80px;
@@ -734,7 +738,7 @@ pre {
   width: 80vw;
 }
 }
-/*=============================  REFERENZEN  ================================= */
+/*===========================  REFERENZEN/APPS  =============================== */
 
 .ref {
   display: flex;
@@ -744,14 +748,19 @@ pre {
   justify-content: space-around;
 }
 
-.employer {
-  width: 275px;
-  margin: 15px;
-  border: grey, 1px;
+.ref p {
+  text-align: center;
+  text-decoration: none;
+  color: black;
+  font-weight: normal;
 }
 
-.employer a:hover {
-  border: 3px;
+.employer{
+  width: 275px;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 20px;
+  border: grey, 1px;
 }
 
 
@@ -765,7 +774,6 @@ pre {
   font-size: 100%;
 
 }
-
 
 /*==============================  KONTAKT  =================================== */
 
